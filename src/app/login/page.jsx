@@ -1,46 +1,37 @@
 "use client";
-import React, { useState } from "react";
-import Link from "next/link";
-import { Person, Envelope, Key, Picture, ArrowRight } from "@gravity-ui/icons";
-
+import React from "react";
+import Link from "next/link"; 
+import { Envelope, Key, ArrowRight } from "@gravity-ui/icons";
+import { authClient } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { authClient } from "@/lib/auth-client";
 
-const RegisterPage = () => {
-  // শুধুমাত্র রোল কাস্টম টগলের স্টাইল চেঞ্জের জন্য এই স্টেটটুকু লাগবে
-  const [role, setRole] = useState("reader"); 
-  
+const LoginPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirect') || '/';
 
+  // 📩 স্টেট ছাড়া ডিরেক্ট ফর্ম ডেটা হ্যান্ডলার
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // ডিরেক্ট ফর্ম থেকে ডেটা কালেক্ট করা হচ্ছে (No onChange State)
     const formData = new FormData(e.currentTarget);
-    const users = Object.fromEntries(formData.entries());
+    const credentials = Object.fromEntries(formData.entries());
 
-    // ইউজার রোল অনুযায়ী প্ল্যান সেট করা
-    const plan = role === "reader" ? "reader_free" : "writer_free";
+    console.log("Submitting Login Credentials:", credentials);
 
-    // authClient দিয়ে ব্যাকেন্ডে ডেটা পাঠানো
-    const { data, error } = await authClient.signUp.email({
-        name: users.fullName,
-        image: users.imageUrl,
-        email: users.email,
-        password: users.password,
-        role: role, // টগল স্টেট থেকে আসছে
-        plan: plan
+    // Better-Auth বা আপনার কাস্টম authClient দিয়ে সাইন-ইন করা
+    const { data, error } = await authClient.signIn.email({
+        email: credentials.email,
+        password: credentials.password,
     });
 
     if (data) {
-        toast.success('Sign up Successful');
+        toast.success('Welcome Back!');
         router.push(redirectTo); 
     }
     if (error) {
-        toast.error(error.message);
+        toast.error(error.message || "Invalid credentials");
     }
   };
 
@@ -73,76 +64,29 @@ const RegisterPage = () => {
         
         {/* Login/Register Tabs */}
         <div className="flex border-b border-gray-800 mb-6 text-sm font-medium">
-          <Link href={`/login?redirect=${redirectTo}`} className="w-1/2 text-center pb-3 text-gray-500 hover:text-gray-300 transition-colors">
-            Login
-          </Link>
           <div className="w-1/2 text-center pb-3 text-[#E5BA73] border-b-2 border-[#E5BA73] relative font-semibold">
-            Register
+            Login
           </div>
+          <Link href={`/register?redirect=${redirectTo}`} className="w-1/2 text-center pb-3 text-gray-500 hover:text-gray-300 transition-colors">
+            Register
+          </Link>
         </div>
 
         {/* Welcome Text */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-serif text-white font-medium mb-1">Create Account</h2>
-          <p className="text-xs text-gray-400 font-light">Join Fable to discover or publish masterpiece literature.</p>
+          <h2 className="text-2xl font-serif text-white font-medium mb-1">Welcome Back</h2>
+          <p className="text-xs text-gray-400 font-light">Please enter your credentials to access your library.</p>
         </div>
 
-        {/* ROLE TOGGLE BUTTON */}
-        <div className="mb-6">
-          <label className="block text-xs font-medium text-gray-400 tracking-wider mb-2 uppercase">Select Your Account Type</label>
-          <div className="relative bg-[#0B0F17] border border-gray-800 p-1 rounded-xl flex items-center h-12">
-            <div 
-              className={`absolute top-1 bottom-1 left-1 rounded-lg bg-[#E5BA73]/10 border border-[#E5BA73]/30 transition-all duration-300 ease-out w-[calc(50%-4px)] ${
-                role === "writer" ? "translate-x-full" : "translate-x-0"
-              }`}
-            />
-            <button
-              type="button"
-              onClick={() => setRole("reader")}
-              className={`w-1/2 text-center text-xs font-semibold tracking-wide z-10 transition-colors duration-200 h-full flex items-center justify-center ${
-                role === "reader" ? "text-[#E5BA73]" : "text-gray-400 hover:text-gray-200"
-              }`}
-            >
-              📖 Reader
-            </button>
-            <button
-              type="button"
-              onClick={() => setRole("writer")}
-              className={`w-1/2 text-center text-xs font-semibold tracking-wide z-10 transition-colors duration-200 h-full flex items-center justify-center ${
-                role === "writer" ? "text-[#E5BA73]" : "text-gray-400 hover:text-gray-200"
-              }`}
-            >
-              ✍️ Original Writer
-            </button>
-          </div>
-        </div>
-
-        {/* Registration Form */}
+        {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           
-          {/* Full Name Field */}
-          <div>
-            <label className="block text-xs font-medium text-gray-400 mb-1.5">Full Name</label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500">
-                <Person className="w-4 h-4" />
-              </span>
-              <input
-                type="text"
-                name="fullName"
-                required
-                placeholder="John Doe"
-                className="w-full bg-[#0B0F17] border border-gray-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#E5BA73]/50 transition-colors"
-              />
-            </div>
-          </div>
-
           {/* Email Field */}
           <div>
             <label className="block text-xs font-medium text-gray-400 mb-1.5">Email Address</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500">
-                <Envelope className="w-4 h-4" />
+                <Envelope style={{ width: "16px", height: "16px" }} />
               </span>
               <input
                 type="email"
@@ -154,29 +98,17 @@ const RegisterPage = () => {
             </div>
           </div>
 
-          {/* Profile Image URL Field */}
-          <div>
-            <label className="block text-xs font-medium text-gray-400 mb-1.5">Profile Image URL</label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500">
-                <Picture className="w-4 h-4" />
-              </span>
-              <input
-                type="url"
-                name="imageUrl"
-                required
-                placeholder="https://imgbb.com/your-avatar-link"
-                className="w-full bg-[#0B0F17] border border-gray-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#E5BA73]/50 transition-colors"
-              />
-            </div>
-          </div>
-
           {/* Password Field */}
           <div>
-            <label className="block text-xs font-medium text-gray-400 mb-1.5">Password</label>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="block text-xs font-medium text-gray-400">Password</label>
+              <Link href="/forgot-password" className="text-[10px] text-[#E5BA73]/80 hover:text-[#E5BA73] transition-colors">
+                Forgot Password?
+              </Link>
+            </div>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-500">
-                <Key className="w-4 h-4" />
+                <Key style={{ width: "16px", height: "16px" }} />
               </span>
               <input
                 type="password"
@@ -193,8 +125,8 @@ const RegisterPage = () => {
             type="submit"
             className="w-full bg-[#E5BA73] text-[#0B0F17] py-3 rounded-xl text-sm font-bold shadow-lg shadow-amber-950/20 hover:bg-[#d4a75e] transition-all duration-200 flex items-center justify-center space-x-2 mt-6"
           >
-            <span>Register to Fable</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>Login to Fable</span>
+            <ArrowRight style={{ width: "16px", height: "16px" }} />
           </button>
         </form>
 
@@ -233,4 +165,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default LoginPage;
