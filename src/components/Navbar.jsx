@@ -12,6 +12,10 @@ const Navbar = () => {
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user
 
+  if(pathname.includes("dashboard")){
+    return null;
+  }
+
   console.log(user, "from navbar");
 
   const navLinks = [
