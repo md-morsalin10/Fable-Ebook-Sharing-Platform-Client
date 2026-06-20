@@ -26,7 +26,7 @@ export function DashboardSideBar() {
   // ✍️ রাইটার (Writer) প্যানেল মেনু
   const writerNavItems = [
     { icon: LayoutSideContent, href: "/dashboard/writer", label: "Dashboard Home" },
-    { icon: Book, href: "/dashboard/", label: "Manage Ebooks" },
+    { icon: Book, href: "/dashboard/writer/my-book", label: "Manage Ebooks" },
     { icon: Plus, href: "/dashboard/writer/add-ebook", label: "Add Ebook" },
     { icon: Bookmark, href: "/dashboard/writer/bookmarks", label: "Bookmark Page" },
     { icon: ArrowRightArrowLeft, href: "/dashboard/writer/sales-history", label: "Sales History" },

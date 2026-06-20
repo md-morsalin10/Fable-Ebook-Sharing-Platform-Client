@@ -63,7 +63,7 @@ export default function AddEbook() {
           price: parseFloat(price),
           description,
           coverImage: imageUrl,
-          status: "Available",
+          status: "Pending",
           dateUploaded: new Date().toISOString(),
           writerId: user?.id,
           writerName: user?.name,

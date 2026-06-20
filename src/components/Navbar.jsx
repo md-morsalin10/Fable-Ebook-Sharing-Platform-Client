@@ -16,13 +16,13 @@ const Navbar = () => {
   //   return null;
   // }
 
-  console.log(user, "from navbar");
+  // console.log(user, "from navbar");
 
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Browse", href: "/browse" },
     { name: "Writers", href: "/writers" },
-    { name: "Dashboard", href: "/dashboard" },
+    { name: "Dashboard", href: `/dashboard/${user?.role}` },
 
   ];
 
