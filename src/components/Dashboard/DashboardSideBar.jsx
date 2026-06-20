@@ -3,15 +3,17 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+// Icons
 import { 
-  Person, 
   Book, 
   ArrowRightArrowLeft, 
   Gear, 
   Bars, 
-  LayoutSideContent
+  LayoutSideContent,
+  Plus,
+  Bookmark
 } from "@gravity-ui/icons";
-import { Button, Drawer } from "@heroui/react";
+import { Drawer } from "@heroui/react";
 
 export function DashboardSideBar() {
   const pathname = usePathname();
@@ -19,32 +21,38 @@ export function DashboardSideBar() {
   // 👥 Better-Auth সেশন রিড করা
   const { data: session } = authClient.useSession();
   const user = session?.user;
-  const currentRole = user?.role || "reader";
+  const currentRole = user?.role || "user"; // Default role "user" (Reader)
 
-  // ড্যাশবোর্ড মেনু আইটেম স্কিমা (Admin)
-  const adminNavItems = [
-    { icon: LayoutSideContent, href: "/dashboard", label: "Dashboard Home" },
-    { icon: Person, href: "/dashboard/manage-users", label: "Manage Users" },
-    { icon: Book, href: "/dashboard/manage-ebooks", label: "Manage Ebooks" },
-    { icon: ArrowRightArrowLeft, href: "/dashboard/transactions", label: "All Transactions" },
-    { icon: Gear, href: "/dashboard/settings", label: "Settings" },
+  // ✍️ রাইটার (Writer) প্যানেল মেনু
+  const writerNavItems = [
+    { icon: LayoutSideContent, href: "/dashboard/writer", label: "Dashboard Home" },
+    { icon: Book, href: "/dashboard/", label: "Manage Ebooks" },
+    { icon: Plus, href: "/dashboard/writer/add-ebook", label: "Add Ebook" },
+    { icon: Bookmark, href: "/dashboard/writer/bookmarks", label: "Bookmark Page" },
+    { icon: ArrowRightArrowLeft, href: "/dashboard/writer/sales-history", label: "Sales History" },
   ];
 
-  // রিডার প্যানেল মেনু
+  // 📖 রিডার (Reader/User) প্যানেল মেনু
   const readerNavItems = [
-    { icon: LayoutSideContent, href: "/dashboard", label: "My Library" },
-    { icon: Book, href: "/dashboard/purchase-history", label: "Purchase History" },
-    { icon: Gear, href: "/dashboard/settings", label: "Account Settings" },
+    { icon: LayoutSideContent, href: "/dashboard", label: "Dashboard Home" },
+    { icon: Book, href: "/dashboard/user", label: "Purchased Ebooks" },
+    { icon: ArrowRightArrowLeft, href: "/dashboard/user/purchase-history", label: "Purchase History" },
+    { icon: Bookmark, href: "/dashboard/user/bookmarks", label: "Bookmark Page" },
+    { icon: Gear, href: "/dashboard/user/profile", label: "Profile Management" },
   ];
 
-  const navItems = currentRole === "admin" || currentRole === "super-admin" ? adminNavItems : readerNavItems;
+  // রোল অনুযায়ী নেভিগেশন আইটেম ফিল্টার করা
+  const navItems = currentRole === "writer" ? writerNavItems : readerNavItems;
 
   const navContent = (
     <div className="flex flex-col h-full bg-[#0B0F17] text-white py-6 px-4">
       {/* 👑 Brand Identity */}
       <div className="px-3 mb-9">
         <Link href="/" className="text-2xl font-serif font-bold text-[#E5BA73] tracking-wider block">
-          Fable <span className="text-[10px] font-sans uppercase tracking-widest text-gray-500 font-bold ml-1">Admin</span>
+          Fable 
+          <span className="text-[10px] font-sans uppercase tracking-widest text-[#E5BA73]/60 font-bold ml-1.5 capitalize">
+            {currentRole === "writer" ? "Writer Panel" : "Reader Panel"}
+          </span>
         </Link>
       </div>
 
@@ -85,7 +93,6 @@ export function DashboardSideBar() {
       {/* 📱 Mobile Responsive Trigger Button & Drawer */}
       <div className="lg:hidden fixed bottom-6 right-6 z-50">
         <Drawer>
-          {/* <Button>Menu</Button> */}
           <Drawer.Trigger>
             <div className="bg-[#E5BA73] text-[#0B0F17] font-bold uppercase tracking-wider rounded-full shadow-2xl p-4 cursor-pointer flex items-center justify-center hover:bg-[#d4a75e] active:scale-95 transition-transform">
               <Bars className="w-5 h-5" />

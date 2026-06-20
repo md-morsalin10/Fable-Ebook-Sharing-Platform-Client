@@ -12,9 +12,9 @@ const Navbar = () => {
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user
 
-  if(pathname.includes("dashboard")){
-    return null;
-  }
+  // if(pathname.includes("dashboard")){
+  //   return null;
+  // }
 
   console.log(user, "from navbar");
 
@@ -23,7 +23,20 @@ const Navbar = () => {
     { name: "Browse", href: "/browse" },
     { name: "Writers", href: "/writers" },
     { name: "Dashboard", href: "/dashboard" },
+
   ];
+
+  // const dashboardLinks = {
+  //   seeker: "/dashboard/reader",
+  //   recruiter: "/dashboard/writer"
+  // }
+
+  // if (user?.email) {
+  //   navLinks.push({
+  //     label: "Dashboard",
+  //     href: dashboardLinks[user?.role || "seeker"]
+  //   })
+  // }
 
   return (
     <nav className="bg-[#0B0F17] text-white border-b border-gray-800 sticky top-0 z-50 transition-colors duration-300">
