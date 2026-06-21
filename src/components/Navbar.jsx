@@ -20,8 +20,7 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Browse", href: "/browse" },
-    { name: "Writers", href: "/writers" },
+    { name: "Browse Ebooks", href: "/browse-ebooks" },
     { name: "Dashboard", href: `/dashboard/${user?.role}` },
 
   ];
