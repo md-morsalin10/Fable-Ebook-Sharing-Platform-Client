@@ -19,9 +19,11 @@ export function DashboardSideBar() {
   const pathname = usePathname();
   
   // 👥 Better-Auth সেশন রিড করা
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
-  const currentRole = user?.role || "user"; // Default role "user" (Reader)
+  
+  // 🎯 সেফটি ফলব্যাক: ইউজার রোল না পাওয়া গেলে ডিফল্ট 'reader' সেট হবে
+  const currentRole = user?.role || "reader"; 
 
   // ✍️ রাইটার (Writer) প্যানেল মেনু
   const writerNavItems = [
@@ -41,8 +43,14 @@ export function DashboardSideBar() {
     { icon: Gear, href: "/dashboard/user/profile", label: "Profile Management" },
   ];
 
-  // রোল অনুযায়ী নেভিগেশন আইটেম ফিল্টার করা
-  const navItems = currentRole === "writer" ? writerNavItems : readerNavItems;
+  // 🎯 এখানে ডুপ্লিকেট কী ফিক্স করা হয়েছে এবং 'currentRole' ব্যবহার করা হয়েছে
+  const navLinksMap = {
+    reader: readerNavItems,
+    writer: writerNavItems,
+  };
+
+  // 🛡️ যদি সেশন এখনো লোড হতে থাকে, তবে একটি খালি অ্যারে বা লোডিং স্টেট দিবে যেন .map এরর না মারে
+  const navItems = navLinksMap[currentRole] || [];
 
   const navContent = (
     <div className="flex flex-col h-full bg-[#0B0F17] text-white py-6 px-4">
@@ -50,7 +58,7 @@ export function DashboardSideBar() {
       <div className="px-3 mb-9">
         <Link href="/" className="text-2xl font-serif font-bold text-[#E5BA73] tracking-wider block">
           Fable 
-          <span className="text-[10px] font-sans uppercase tracking-widest text-[#E5BA73]/60 font-bold ml-1.5 capitalize">
+          <span className="text-[10px] font-sans uppercase tracking-widest text-[#E5BA73]/60 font-bold ml-1.5">
             {currentRole === "writer" ? "Writer Panel" : "Reader Panel"}
           </span>
         </Link>
@@ -58,27 +66,31 @@ export function DashboardSideBar() {
 
       {/* 🔗 Navigation Links */}
       <nav className="flex-1 flex flex-col gap-1.5">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-xs uppercase tracking-wider font-semibold transition-all duration-200 group ${
-                isActive
-                  ? "bg-[#E5BA73]/10 text-[#E5BA73] border border-[#E5BA73]/20"
-                  : "text-gray-400 hover:text-white hover:bg-gray-900/40"
-              }`}
-            >
-              <item.icon 
-                className={`w-4 h-4 transition-colors ${
-                  isActive ? "text-[#E5BA73]" : "text-gray-500 group-hover:text-gray-300"
-                }`} 
-              />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
+        {isPending ? (
+          <div className="text-gray-500 text-xs px-4 py-2 animate-pulse">Loading Menu...</div>
+        ) : (
+          navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-xs uppercase tracking-wider font-semibold transition-all duration-200 group ${
+                  isActive
+                    ? "bg-[#E5BA73]/10 text-[#E5BA73] border border-[#E5BA73]/20"
+                    : "text-gray-400 hover:text-white hover:bg-gray-900/40"
+                }`}
+              >
+                <item.icon 
+                  className={`w-4 h-4 transition-colors ${
+                    isActive ? "text-[#E5BA73]" : "text-gray-500 group-hover:text-gray-300"
+                  }`} 
+                />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })
+        )}
       </nav>
     </div>
   );

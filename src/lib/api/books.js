@@ -11,3 +11,8 @@ export const getBooksByWriterId = async ({writerId}) => {
 export const getBooks = async () => {
   return await serverFetch("/api/books");
 };
+
+export const getBookById = async (id) => {
+    return serverFetch(`/api/books/${id}`);
+}
+

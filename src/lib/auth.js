@@ -16,7 +16,7 @@ export const auth = betterAuth({
                 default:"reader"
             },
             plan:{
-                default:"reader_free"
+                default:"free"
             }
         }
     },

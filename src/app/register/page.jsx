@@ -23,7 +23,7 @@ const RegisterPage = () => {
     const users = Object.fromEntries(formData.entries());
 
     // ইউজার রোল অনুযায়ী প্ল্যান সেট করা
-    const plan = role === "reader" ? "reader_free" : "writer_free";
+    const plan = role === "reader" ? "free" : "free";
 
     // authClient দিয়ে ব্যাকেন্ডে ডেটা পাঠানো
     const { data, error } = await authClient.signUp.email({

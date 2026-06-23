@@ -19,9 +19,9 @@ const Navbar = () => {
   // console.log(user, "from navbar");
 
   const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Browse Ebooks", href: "/browse-ebooks" },
-    { name: "Dashboard", href: `/dashboard/${user?.role}` },
+    { label: "Home", href: "/" },
+    { label: "Browse Ebooks", href: "/browse-ebooks" },
+    { label: "Dashboard", href: `/dashboard/${user?.role}` },
 
   ];
 
@@ -55,12 +55,12 @@ const Navbar = () => {
               const isActive = pathname === link.href;
               return (
                 <Link
-                  key={link.name}
+                  key={link.label}
                   href={link.href}
                   className={`relative text-sm font-semibold tracking-medium pb-2 transition-colors duration-200 hover:text-[#E5BA73] ${isActive ? "text-[#E5BA73]" : "text-gray-300"
                     }`}
                 >
-                  {link.name}
+                  {link.label}
                   {/* Active Route Underline indicator from image_d337a6.png */}
                   {isActive && (
                     <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#E5BA73] rounded-full" />
@@ -130,7 +130,7 @@ const Navbar = () => {
             const isActive = pathname === link.href;
             return (
               <Link
-                key={link.name}
+                key={link.label}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
                 className={`block px-4 py-2.5 rounded-lg text-base font-medium transition-colors duration-150 ${isActive
@@ -138,7 +138,7 @@ const Navbar = () => {
                   : "text-gray-300 hover:bg-gray-800 hover:text-white"
                   }`}
               >
-                {link.name}
+                {link.label}
               </Link>
             );
           })}
