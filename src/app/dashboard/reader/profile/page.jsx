@@ -112,13 +112,14 @@ const ReaderProfilePage = async () => {
                     <h3 className="text-2xl font-serif font-bold text-white">{librarySize}</h3>
                     <p className="text-[10px] tracking-wider font-semibold text-gray-500 uppercase mt-1">Books Purchased</p>
                 </div>
-
+                
                 <div className="bg-[#0B0F17]/40 border border-gray-800/60 rounded-2xl p-5 shadow-lg">
                     <span className="text-lg block mb-2">⚡</span>
                     <h3 className="text-2xl font-serif font-bold text-white">1</h3>
                     <p className="text-[10px] tracking-wider font-semibold text-gray-500 uppercase mt-1">Day Reading Streak</p>
                 </div>
 
+                {/* কার্ড ৩: টোটাল অ্যানোটেশনস */}
                 <div className="bg-[#0B0F17]/40 border border-gray-800/60 rounded-2xl p-5 shadow-lg">
                     <span className="text-lg block mb-2">✍️</span>
                     <h3 className="text-2xl font-serif font-bold text-white">0</h3>

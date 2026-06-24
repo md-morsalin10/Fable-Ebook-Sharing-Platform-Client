@@ -110,4 +110,8 @@ export default async function Success({ searchParams }) {
       </div>
     )
   }
+  else{
+    return (
+      <div className="min-h-[90vh] flex items-center justify-center bg-[#030712] px-4 py-16 relative overflow-hidden selection:bg-[#E5BA73]/30 selection:text-[#E5BA73]"></div>
+  )}
 }

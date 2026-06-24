@@ -59,7 +59,7 @@ const NavbarProfileDropdown = () => {
                     {/* Menu Items */}
                     <Dropdown.Menu className="flex flex-col gap-0.5 p-0 overflow-visible">
                         <Dropdown.Item id="dashboard" textValue="Dashboard" className="hover:bg-gray-800/50 p-2 rounded-xl transition-colors">
-                            <Link href={'/dashboard'} className="flex items-center gap-3 w-full group">
+                            <Link href={`/dashboard/${user?.role}`} className="flex items-center gap-3 w-full group">
                                 <LayoutSideContent className="w-4 h-4 text-gray-400 group-hover:text-[#E5BA73] transition-colors" />
                                 <Label className="text-xs font-medium text-gray-300 group-hover:text-white cursor-pointer transition-colors">Dashboard</Label>
                             </Link>
