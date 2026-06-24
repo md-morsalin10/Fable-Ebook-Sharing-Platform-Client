@@ -54,7 +54,7 @@ const PurchaseEbookPage = async () => {
                             const bookWithCorrectId = {
                                 ...item,
                                 _id: item.bookId,
-                                status: "sold" 
+                                
                             };
 
                             return (
