@@ -36,11 +36,11 @@ export function DashboardSideBar() {
 
   // 📖 রিডার (Reader/User) প্যানেল মেনু
   const readerNavItems = [
-    { icon: LayoutSideContent, href: "/dashboard", label: "Dashboard Home" },
-    { icon: Book, href: "/dashboard/user", label: "Purchased Ebooks" },
-    { icon: ArrowRightArrowLeft, href: "/dashboard/user/purchase-history", label: "Purchase History" },
-    { icon: Bookmark, href: "/dashboard/user/bookmarks", label: "Bookmark Page" },
-    { icon: Gear, href: "/dashboard/user/profile", label: "Profile Management" },
+    { icon: LayoutSideContent, href: "/dashboard/reader", label: "Dashboard Home" },
+    { icon: Book, href: "/dashboard/reader/purchased-ebook", label: "Purchased Ebooks" },
+    { icon: ArrowRightArrowLeft, href: "/dashboard/reader/history", label: "Purchase History" },
+    { icon: Bookmark, href: "/dashboard/reader/bookmark", label: "Bookmark Page" },
+    { icon: Gear, href: "/dashboard/reader/profile", label: "Profile Management" },
   ];
 
   // 🎯 এখানে ডুপ্লিকেট কী ফিক্স করা হয়েছে এবং 'currentRole' ব্যবহার করা হয়েছে
