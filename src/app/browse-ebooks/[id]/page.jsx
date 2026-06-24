@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import Link from 'next/link';
 import EbookDetailsClient from '@/components/Books/EbookDetailsClient';
 import { getBookById } from '@/lib/api/books';
+import { getUserSeason } from '@/lib/core/Session';
 
 // 💀 আপনার তৈরি করা Skeleton Loader
 const DetailsSkeleton = () => (
@@ -33,9 +34,10 @@ const DetailsSkeleton = () => (
 
 // 📦 এই নতুন ছোট কম্পোনেন্টটি ডেটা নিয়ে আসবে এবং Suspense-কে ট্রিগার করবে
 const BookDetailsContent = async ({ id }) => {
+    const user = await getUserSeason();
     let book = null;
     try {
-        book = await getBookById(id);
+        book = await getBookById(id, user?.email);
     } catch (err) {
         console.error("Error fetching book details:", err);
     }

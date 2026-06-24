@@ -64,13 +64,13 @@ export default function AddEbook() {
           description,
           coverImage: imageUrl,
           status: "Availble",
+          isPurchased: false,
           dateUploaded: new Date().toISOString(),
           writerId: user?.id,
           writerName: user?.name,
           writerEmail: user?.email,
         };
 
-        // ৩. ব্যাকএন্ড এ ডাটা পাঠানো
         const response = await createBook(ebookData);
         console.log(response, "response");
 

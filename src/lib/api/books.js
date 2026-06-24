@@ -12,7 +12,7 @@ export const getBooks = async () => {
   return await serverFetch("/api/books");
 };
 
-export const getBookById = async (id) => {
-    return serverFetch(`/api/books/${id}`);
+export const getBookById = async (id, currentUserEmail) => {
+    return serverFetch(`/api/books/${id}?userEmail=${currentUserEmail}`);
 }
 

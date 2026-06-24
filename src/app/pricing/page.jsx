@@ -115,7 +115,7 @@ export default function WriterPricingPage() {
                     </div>
 
                     {/* 🚀 মডার্ন আল্ট্রা-লাক্স বাটন */}
-                    <form action="/api/subscription" method="POST" onSubmit={handleSubmit}>
+                    <form action="/api/writersPayment" method="POST" onSubmit={handleSubmit}>
                         <button
                             type="submit"
                             disabled={loading}
