@@ -101,11 +101,11 @@ export default async function WritersDashboardPage() {
             <h2 className="text-lg font-bold text-white flex items-center gap-2">
               <Book className="text-[#E5BA73] w-4 h-4" /> Recent Ebooks
             </h2>
-            <Link href="/dashboard/writer/manage-ebook" className="text-xs text-[#E5BA73] hover:underline">
+            {/* <Link href="/dashboard/writer/manage-ebook" className="text-xs text-[#E5BA73] hover:underline">
               View All Books
-            </Link>
+            </Link> */}
           </div>
-
+ 
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>

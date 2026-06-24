@@ -49,7 +49,6 @@ const SalesHistory = async () => {
                     </span>
                 </div>
 
-                {/* কার্ড ৩: This Month Sales */}
                 <div className="bg-[#0B0F17]/50 border border-gray-800/80 rounded-2xl p-6 backdrop-blur-md shadow-lg relative overflow-hidden">
                     <span className="block text-xs uppercase font-bold text-gray-500 tracking-wider">This Month</span>
                     <span className="text-3xl font-extrabold text-white mt-2 block font-serif">
@@ -61,7 +60,6 @@ const SalesHistory = async () => {
                 </div>
             </div>
 
-            {/* 🔍 ২. ফিল্টার এবং স্ট্যাটাস বার (image_ccaa09.png অনুযায়ী) */}
             <div className="bg-[#0B0F17]/30 border border-gray-800/60 rounded-xl p-4 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div className="flex flex-wrap items-center gap-3">
                     <button className="px-4 py-2 bg-gray-950 border border-gray-800 rounded-xl text-xs font-semibold text-gray-400 flex items-center gap-2 hover:border-gray-700 transition-all">
@@ -73,7 +71,6 @@ const SalesHistory = async () => {
                 </div>
             </div>
 
-            {/* 📋 ৩. সেলস হিস্ট্রি টেবিল কন্টেইনার */}
             <div className="bg-[#0B0F17]/40 border border-gray-800/60 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">

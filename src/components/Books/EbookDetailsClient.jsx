@@ -4,10 +4,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { authClient } from '@/lib/auth-client';
+import { createBookmark } from '@/lib/action/bookmark';
 
-export default function EbookDetailsClient({ book }) {
-    const [isBookmarked, setIsBookmarked] = useState(false);
-    const [mounted, setMounted] = useState(false); 
+export default function EbookDetailsClient({ book, isInitiallyBookmarked }) {
+    const [isBookmarked, setIsBookmarked] = useState(isInitiallyBookmarked);
+    const [mounted, setMounted] = useState(false);
     const { data: session } = authClient.useSession();
     const user = session?.user;
     const stripeFormRef = useRef(null);
@@ -21,10 +22,37 @@ export default function EbookDetailsClient({ book }) {
 
     const isSold = book.status?.toLowerCase() === 'sold';
     const isWriter = user && user.email === book.writerEmail;
-    const isBuyer = user && user.email === book.buyerEmail; 
-    
+    const isBuyer = user && user.email === book.buyerEmail;
+
     // 🎯 মাউন্ট হওয়ার আগে সার্ভার ও ক্লায়েন্টকে একই স্টেট রাখতে হবে যাতে এরর না আসে
-    const isContentUnlocked = mounted && (isWriter || isBuyer); 
+    const isContentUnlocked = mounted && (isWriter || isBuyer);
+
+    const handleBookmarkToggle = async () => {
+        if (!user) {
+            window.location.href = `/login?redirect=/browse-ebooks/${currentBookId}`;
+            return;
+        }
+
+        // 🔄 UI-তে সাথে সাথে স্টার বাটন টগল করে দেওয়া (Instant Feedback)
+        setIsBookmarked(!isBookmarked);
+
+        try {
+            // 🚀 আপনার তৈরি করা সার্ভার অ্যাকশন কল
+            await createBookmark({
+                userId: user.id,
+                bookId: currentBookId,
+                title: book.title,
+                coverImage: book.coverImage,
+                price: book.price,
+                genre: book.genre,
+                writerName: book.writerName,
+            });
+        } catch (error) {
+            console.error("Bookmark sync failed:", error);
+            // যদি ব্যাকএন্ডে কোনো কারণে এরর হয়, তবে UI স্টেট আগের অবস্থায় ফিরিয়ে নেওয়া
+            setIsBookmarked(isBookmarked);
+        }
+    };
 
     const handlePurchase = (e) => {
         if (e) e.preventDefault();
@@ -140,10 +168,10 @@ export default function EbookDetailsClient({ book }) {
                                 <button type="submit" className="w-full bg-[#E5BA73] hover:bg-[#d4ab63] text-[#0E1420] font-bold text-sm py-3 px-6 rounded-xl transition-all shadow-md">
                                     Buy Now
                                 </button>
-                            </form>  
+                            </form>
                         )}
 
-                        <button onClick={() => setIsBookmarked(!isBookmarked)} className={`px-6 py-3 border rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${isBookmarked ? 'bg-purple-500/10 text-purple-400 border-purple-500/40' : 'bg-[#0B0F17] text-gray-300 border-gray-800 hover:border-gray-700'}`}>
+                        <button onClick={handleBookmarkToggle} className={`px-6 py-3 border rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${isBookmarked ? 'bg-purple-500/10 text-purple-400 border-purple-500/40' : 'bg-[#0B0F17] text-gray-300 border-gray-800 hover:border-gray-700'}`}>
                             <span>{isBookmarked ? '★' : '☆'}</span>
                             {isBookmarked ? 'Bookmarked' : 'Bookmark'}
                         </button>
