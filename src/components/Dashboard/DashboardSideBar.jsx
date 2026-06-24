@@ -43,7 +43,6 @@ export function DashboardSideBar() {
     { icon: Gear, href: "/dashboard/reader/profile", label: "Profile Management" },
   ];
 
-  // 🎯 এখানে ডুপ্লিকেট কী ফিক্স করা হয়েছে এবং 'currentRole' ব্যবহার করা হয়েছে
   const navLinksMap = {
     reader: readerNavItems,
     writer: writerNavItems,

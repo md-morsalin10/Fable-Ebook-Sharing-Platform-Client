@@ -14,7 +14,7 @@ const BooksCard = ({ book }) => {
             href={`/browse-ebooks/${bookId}`}
             className="group bg-[#0B0F17] border border-gray-800/60 rounded-2xl p-4 shadow-md hover:border-gray-700/60 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between cursor-pointer focus:outline-none focus:border-[#E5BA73]"
         >
-            <div>
+            <div> 
                 {/* 📔 Cover Image Container */}
                 <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-gray-950 border border-gray-900 mb-4">
                     <Image 
