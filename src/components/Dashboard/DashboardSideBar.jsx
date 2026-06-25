@@ -4,26 +4,32 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 // Icons
-import { 
-  Book, 
-  ArrowRightArrowLeft, 
-  Gear, 
-  Bars, 
+import {
+  Book,
+  ArrowRightArrowLeft,
+  Gear,
+  Bars,
   LayoutSideContent,
   Plus,
-  Bookmark
+  Bookmark,
+
+  Persons,
+  BookOpen,
+
 } from "@gravity-ui/icons";
 import { Drawer } from "@heroui/react";
+import { LuLayoutDashboard } from "react-icons/lu";
+import { BsArrowLeftRight } from "react-icons/bs";
 
 export function DashboardSideBar() {
   const pathname = usePathname();
-  
+
   // 👥 Better-Auth সেশন রিড করা
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
-  
+
   // 🎯 সেফটি ফলব্যাক: ইউজার রোল না পাওয়া গেলে ডিফল্ট 'reader' সেট হবে
-  const currentRole = user?.role || "reader"; 
+  const currentRole = user?.role || "reader";
 
   // ✍️ রাইটার (Writer) প্যানেল মেনু
   const writerNavItems = [
@@ -43,9 +49,17 @@ export function DashboardSideBar() {
     { icon: Gear, href: "/dashboard/reader/profile", label: "Profile Management" },
   ];
 
+  const adminNavItems = [
+    { icon: LuLayoutDashboard, href: "/dashboard/admin", label: "Dashboard Home" },
+    { icon: Persons, href: "/dashboard/admin/manage-users", label: "Manage Users" },
+    { icon: BookOpen, href: "/dashboard/admin/manage-ebooks", label: "Manage All Ebooks" },
+    { icon: BsArrowLeftRight, href: "/dashboard/admin/transactions", label: "View All Transactions" },
+  ]
+
   const navLinksMap = {
     reader: readerNavItems,
     writer: writerNavItems,
+    admin: adminNavItems,
   };
 
   // 🛡️ যদি সেশন এখনো লোড হতে থাকে, তবে একটি খালি অ্যারে বা লোডিং স্টেট দিবে যেন .map এরর না মারে
@@ -56,9 +70,9 @@ export function DashboardSideBar() {
       {/* 👑 Brand Identity */}
       <div className="px-3 mb-9">
         <Link href="/" className="text-2xl font-serif font-bold text-[#E5BA73] tracking-wider block">
-          Fable 
+          Fable
           <span className="text-[10px] font-sans uppercase tracking-widest text-[#E5BA73]/60 font-bold ml-1.5">
-            {currentRole === "writer" ? "Writer Panel" : "Reader Panel"}
+            {currentRole === "writer" ? "Writer Panel" : currentRole === "reader" ? "Reader Panel" : "Admin Panel"}
           </span>
         </Link>
       </div>
@@ -74,16 +88,14 @@ export function DashboardSideBar() {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-xs uppercase tracking-wider font-semibold transition-all duration-200 group ${
-                  isActive
-                    ? "bg-[#E5BA73]/10 text-[#E5BA73] border border-[#E5BA73]/20"
-                    : "text-gray-400 hover:text-white hover:bg-gray-900/40"
-                }`}
+                className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-xs uppercase tracking-wider font-semibold transition-all duration-200 group ${isActive
+                  ? "bg-[#E5BA73]/10 text-[#E5BA73] border border-[#E5BA73]/20"
+                  : "text-gray-400 hover:text-white hover:bg-gray-900/40"
+                  }`}
               >
-                <item.icon 
-                  className={`w-4 h-4 transition-colors ${
-                    isActive ? "text-[#E5BA73]" : "text-gray-500 group-hover:text-gray-300"
-                  }`} 
+                <item.icon
+                  className={`w-4 h-4 transition-colors ${isActive ? "text-[#E5BA73]" : "text-gray-500 group-hover:text-gray-300"
+                    }`}
                 />
                 <span>{item.label}</span>
               </Link>
@@ -109,7 +121,7 @@ export function DashboardSideBar() {
               <Bars className="w-5 h-5" />
             </div>
           </Drawer.Trigger>
-          
+
           <Drawer.Backdrop>
             <Drawer.Content placement="left" className="bg-[#0B0F17] p-0 max-w-[260px]">
               <Drawer.Dialog className="bg-[#0B0F17] h-full p-0">

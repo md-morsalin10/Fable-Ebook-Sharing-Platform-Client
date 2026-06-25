@@ -6,14 +6,17 @@ import Link from 'next/link';
 import { authClient } from '@/lib/auth-client';
 import { createBookmark } from '@/lib/action/bookmark';
 
-export default function EbookDetailsClient({ book, isInitiallyBookmarked }) {
+export default function EbookDetailsClient({ book: initialBook, isInitiallyBookmarked }) {
+    const [book, setBook] = useState(initialBook); // স্ট্যাটাস লাইভ আপডেট করার জন্য স্টেট
     const [isBookmarked, setIsBookmarked] = useState(isInitiallyBookmarked);
     const [mounted, setMounted] = useState(false);
+    const [isPublishing, setIsPublishing] = useState(false); // পাবলিশ বাটনের লোডিং স্টেট
+    
     const { data: session } = authClient.useSession();
     const user = session?.user;
     const stripeFormRef = useRef(null);
 
-    // কম্পোনেন্ট ব্রাউজারে মাউন্ট হওয়ার পর স্টেট ট্রু হবে
+    // কম্পোনেন্ট ব্রাউজারে মাউন্ট হওয়ার পর স্টেট ট্রু হবে
     useEffect(() => {
         setMounted(true);
     }, []);
@@ -24,7 +27,7 @@ export default function EbookDetailsClient({ book, isInitiallyBookmarked }) {
     const isWriter = user && user.email === book.writerEmail;
     const isBuyer = user && user.email === book.buyerEmail;
 
-    // 🎯 মাউন্ট হওয়ার আগে সার্ভার ও ক্লায়েন্টকে একই স্টেট রাখতে হবে যাতে এরর না আসে
+    // 🎯 মাউন্ট হওয়ার আগে সার্ভার ও ক্লায়েন্টকে একই স্টেট রাখতে হবে যাতে এরর না আসে
     const isContentUnlocked = mounted && (isWriter || isBuyer);
 
     const handleBookmarkToggle = async () => {
@@ -33,7 +36,7 @@ export default function EbookDetailsClient({ book, isInitiallyBookmarked }) {
             return;
         }
 
-        // 🔄 UI-তে সাথে সাথে স্টার বাটন টগল করে দেওয়া (Instant Feedback)
+        // 🔄 UI-তে সাথে সাথে স্টার বাটন টগল করে দেওয়া (Instant Feedback)
         setIsBookmarked(!isBookmarked);
 
         try {
@@ -49,8 +52,40 @@ export default function EbookDetailsClient({ book, isInitiallyBookmarked }) {
             });
         } catch (error) {
             console.error("Bookmark sync failed:", error);
-            // যদি ব্যাকএন্ডে কোনো কারণে এরর হয়, তবে UI স্টেট আগের অবস্থায় ফিরিয়ে নেওয়া
+            // যদি ব্যাকএন্ডে কোনো কারণে এরর হয়, তবে UI স্টেট আগের অবস্থায় ফিরিয়ে নেওয়া
             setIsBookmarked(isBookmarked);
+        }
+    };
+
+    // 🚀 রাইটারের জন্য সরাসরি বুক ডিটেইলস পেজ থেকে পাবলিশ করার ফাংশন
+    const handlePublishNow = async () => {
+        if (isPublishing) return;
+        
+        setIsPublishing(true);
+        try {
+            // ব্যাকএন্ডের নতুন ইউনিভার্সাল এপিআই রুটটি কল করা হচ্ছে
+            const response = await fetch(`/api/books/status/${currentBookId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ status: "published" }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // UI স্টেট আপডেট করে স্ট্যাটাস 'published' করে দেওয়া
+                setBook(prev => ({ ...prev, status: "published" }));
+                alert("🎉 Your ebook is now live for everyone to browse and buy!");
+            } else {
+                alert(data.message || "Failed to publish the book.");
+            }
+        } catch (error) {
+            console.error("Error publishing book:", error);
+            alert("Something went wrong. Please try again.");
+        } finally {
+            setIsPublishing(false);
         }
     };
 
@@ -109,7 +144,14 @@ export default function EbookDetailsClient({ book, isInitiallyBookmarked }) {
                         <p className="text-xs text-gray-400">
                             Written by <Link href={`/browse-ebooks?search=${book.writerName}`} className="font-bold text-[#E5BA73] hover:underline">{book.writerName}</Link>
                         </p>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase ${isSold ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`}>
+                        {/* 🎯 ১. পরিমার্জিত স্ট্যাটাস ব্যাজ (Unpublished এর জন্য হলুদ কালার) */}
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase ${
+                            book.status?.toLowerCase() === 'sold'
+                                ? 'bg-red-500/10 text-red-400 border-red-500/20'
+                                : book.status?.toLowerCase() === 'unpublished'
+                                ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                        }`}>
                             {book.status}
                         </span>
                     </div>
@@ -137,13 +179,25 @@ export default function EbookDetailsClient({ book, isInitiallyBookmarked }) {
                     </div>
 
                     {/* অ্যাকশন বাটন প্যানেল */}
-                    <div className="flex flex-col sm:flex-row gap-4 max-w-xl">
+                    <div className="flex flex-col sm:flex-row gap-4 max-w-xl w-full">
                         {!mounted ? (
                             <div className="flex-1 h-12 bg-gray-800/40 rounded-xl animate-pulse"></div>
                         ) : isWriter ? (
-                            <button disabled className="flex-1 bg-gray-800 text-gray-500 cursor-not-allowed font-bold text-sm py-3 px-6 rounded-xl border border-gray-700/50">
-                                You Own This Ebook
-                            </button>
+                            /* 🎯 ২. পরিমার্জিত রাইটার অ্যাকশন এরিয়া */
+                            <div className="flex-1 flex flex-col sm:flex-row gap-3">
+                                <button disabled className="flex-1 bg-gray-800 text-gray-500 cursor-not-allowed font-bold text-sm py-3 px-6 rounded-xl border border-gray-700/50">
+                                    You Own This Ebook
+                                </button>
+                                {book.status?.toLowerCase() === "unpublished" && (
+                                    <button 
+                                        onClick={handlePublishNow} 
+                                        disabled={isPublishing}
+                                        className="bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 text-white font-bold text-sm py-3 px-6 rounded-xl transition-all shadow-md whitespace-nowrap min-w-[140px]"
+                                    >
+                                        {isPublishing ? "Publishing..." : "Publish Live 🚀"}
+                                    </button>
+                                )}
+                            </div>
                         ) : isBuyer ? (
                             <div className="flex-1 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 font-bold text-sm py-3 px-6 rounded-xl text-center flex items-center justify-center">
                                 ✓ Already Purchased
@@ -179,6 +233,7 @@ export default function EbookDetailsClient({ book, isInitiallyBookmarked }) {
                 </div>
             </div>
 
+            {/* নিচের সেকশন: ফুল কন্টেন্ট সেকশন (লক/আনলক লজিক) */}
             <div className="mt-6 border-t border-gray-800/60 pt-10">
                 {isContentUnlocked ? (
                     <div className="bg-[#0B0F17] border border-emerald-500/20 rounded-2xl p-6 md:p-8 shadow-xl">

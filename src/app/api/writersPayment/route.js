@@ -29,6 +29,7 @@ export async function POST() {
       metadata: {
         priceId: PRICE_ID,
         writerId: user?.id,
+        price: "19.99",
         writerEmail: user?.email,
         writerName: user?.name || "Writer"
       },

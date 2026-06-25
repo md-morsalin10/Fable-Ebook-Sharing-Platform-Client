@@ -39,14 +39,15 @@ const WriterBooks = async () => {
                                 <tr className="border-b border-gray-800 text-xs uppercase tracking-wider text-gray-400">
                                     <th className="pb-4 font-semibold pl-2">Book Details</th>
                                     <th className="pb-4 font-semibold">Price</th>
-                                    {/* ⚡ ইমার্জিং ক্লায়েন্ট রো লজিকের সুবিধার্থে ২টা কলামকে একবারে কম্পোনেন্টে পাস করব */}
+                                    {/* ⚡ ইমার্জিং ক্লায়েন্ট রো লজিকের সুবিধার্থে কলামগুলো কম্পোনেন্টে হ্যান্ডেল হচ্ছে */}
                                     <th className="pb-4 font-semibold">Status</th>
                                     <th className="pb-4 font-semibold text-right pr-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-800/50 text-sm">
                                 {books?.map((book) => {
-                                    const currentId = book._id?.$oid || book._id;
+                                    // মঙ্গোডিবি অবজেক্ট আইডি বা প্লেইন আইডি স্ট্রিং এক্সট্র্যাক্ট করা
+                                    const currentId = book._id?.toString() || (book._id?.$oid) || book._id;
                                     
                                     return (
                                         <tr key={currentId} className="group hover:bg-gray-900/20 transition-colors">
@@ -54,13 +55,15 @@ const WriterBooks = async () => {
                                             <td className="py-4 pr-4 pl-2">
                                                 <div className="flex items-center gap-4">
                                                     <div className="relative w-12 h-16 flex-shrink-0 bg-gray-900 rounded overflow-hidden border border-gray-800">
-                                                        <Image 
-                                                            src={book.coverImage} 
-                                                            alt={book.title || "book"} 
-                                                            fill
-                                                            sizes="48px"
-                                                            className="object-cover"
-                                                        />
+                                                        {book.coverImage && (
+                                                            <Image 
+                                                                src={book.coverImage} 
+                                                                alt={book.title || "book"} 
+                                                                fill
+                                                                sizes="48px"
+                                                                className="object-cover"
+                                                            />
+                                                        )}
                                                     </div>
                                                     <div>
                                                         <div className="font-semibold text-white group-hover:text-[#E5BA73] transition-colors line-clamp-1">
@@ -76,11 +79,10 @@ const WriterBooks = async () => {
                                                 ${Number(book.price).toFixed(2)}
                                             </td>
 
-                                            {/* ⚡ Status + Actions (সব এক রিঅ্যাক্টিভ কম্পোনেন্টে চলে গেছে) */}
+                                            {/* ⚡ Status + Actions (আউটডেটেড initialPublished রিমুভ করা হয়েছে) */}
                                             <EbookActions 
                                                 bookId={currentId} 
-                                                initialPublished={book.isPublished} 
-                                                currentStatus={book.status} 
+                                                currentStatus={book.status || 'unpublished'} 
                                             />
                                         </tr>
                                     );

@@ -65,20 +65,6 @@ const NavbarProfileDropdown = () => {
                             </Link>
                         </Dropdown.Item>
 
-                        <Dropdown.Item id="profile" textValue="Profile" className="hover:bg-gray-800/50 p-2 rounded-xl transition-colors">
-                            <Link href={'/profile'} className="flex items-center gap-3 w-full group">
-                                <Person className="w-4 h-4 text-gray-400 group-hover:text-[#E5BA73] transition-colors" />
-                                <Label className="text-xs font-medium text-gray-300 group-hover:text-white cursor-pointer transition-colors">Author Profile</Label>
-                            </Link>
-                        </Dropdown.Item>
-
-                        <Dropdown.Item id="settings" textValue="Settings" className="hover:bg-gray-800/50 p-2 rounded-xl transition-colors">
-                            <Link href={'/settings'} className="flex items-center gap-3 w-full group">
-                                <Gear className="w-4 h-4 text-gray-400 group-hover:text-[#E5BA73] transition-colors" />
-                                <Label className="text-xs font-medium text-gray-300 group-hover:text-white cursor-pointer transition-colors">Account Settings</Label>
-                            </Link>
-                        </Dropdown.Item>
-
                         <Dropdown.Item
                             onClick={handleSignOut}
                             id="logout"
