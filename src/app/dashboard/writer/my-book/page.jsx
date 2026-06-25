@@ -3,7 +3,7 @@ import { getUserSeason } from '@/lib/core/Session';
 import Image from 'next/image';
 import React from 'react';
 import { Book } from '@gravity-ui/icons';
-import EbookActions from '@/components/Dashboard/EbookActions'; // ক্লায়েন্ট অ্যাকশন বাটন ইমপোর্ট
+import EbookActions from '@/components/Dashboard/EbookActions'; 
 
 const WriterBooks = async () => {
     const user = await getUserSeason();
@@ -27,9 +27,9 @@ const WriterBooks = async () => {
             </div>
 
             {/* 📊 Main Table Layout */}
-            {books && books.length === 0 ? (
+            {!books || books.length === 0 ? (
                 <div className="bg-[#0B0F17] border border-gray-800 rounded-2xl p-10 text-center text-gray-400">
-                    You havent added any books yet or ID mismatched.
+                    You haven't added any books yet or ID mismatched.
                 </div>
             ) : (
                 <div className="bg-[#0B0F17] border border-gray-800/60 rounded-2xl p-6 shadow-xl overflow-hidden">
@@ -39,56 +39,52 @@ const WriterBooks = async () => {
                                 <tr className="border-b border-gray-800 text-xs uppercase tracking-wider text-gray-400">
                                     <th className="pb-4 font-semibold pl-2">Book Details</th>
                                     <th className="pb-4 font-semibold">Price</th>
+                                    {/* ⚡ ইমার্জিং ক্লায়েন্ট রো লজিকের সুবিধার্থে ২টা কলামকে একবারে কম্পোনেন্টে পাস করব */}
                                     <th className="pb-4 font-semibold">Status</th>
                                     <th className="pb-4 font-semibold text-right pr-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-800/50 text-sm">
-                                {books?.map((book) => (
-                                    <tr key={book._id} className="group hover:bg-gray-900/20 transition-colors">
-                                        {/* 📖 Title & Cover Image */}
-                                        <td className="py-4 pr-4 pl-2">
-                                            <div className="flex items-center gap-4">
-                                                <div className="relative w-12 h-16 flex-shrink-0 bg-gray-900 rounded overflow-hidden border border-gray-800">
-                                                    <Image 
-                                                        src={book.coverImage} 
-                                                        alt={book.title} 
-                                                        fill
-                                                        sizes="48px"
-                                                        className="object-cover"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <div className="font-semibold text-white group-hover:text-[#E5BA73] transition-colors line-clamp-1">
-                                                        {book.title}
+                                {books?.map((book) => {
+                                    const currentId = book._id?.$oid || book._id;
+                                    
+                                    return (
+                                        <tr key={currentId} className="group hover:bg-gray-900/20 transition-colors">
+                                            {/* 📖 Title & Cover Image */}
+                                            <td className="py-4 pr-4 pl-2">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="relative w-12 h-16 flex-shrink-0 bg-gray-900 rounded overflow-hidden border border-gray-800">
+                                                        <Image 
+                                                            src={book.coverImage} 
+                                                            alt={book.title || "book"} 
+                                                            fill
+                                                            sizes="48px"
+                                                            className="object-cover"
+                                                        />
                                                     </div>
-                                                    <div className="text-xs text-gray-400 mt-0.5 capitalize">{book.genre}</div>
+                                                    <div>
+                                                        <div className="font-semibold text-white group-hover:text-[#E5BA73] transition-colors line-clamp-1">
+                                                            {book.title}
+                                                        </div>
+                                                        <div className="text-xs text-gray-400 mt-0.5 capitalize">{book.genre}</div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
+                                            </td>
 
-                                        {/* 💰 Price */}
-                                        <td className="py-4 font-medium text-gray-300">
-                                            ${book.price?.toFixed(2)}
-                                        </td>
+                                            {/* 💰 Price */}
+                                            <td className="py-4 font-medium text-gray-300">
+                                                ${Number(book.price).toFixed(2)}
+                                            </td>
 
-                                        {/* 🟢 Status (Published/Unpublished) */}
-                                        <td className="py-4">
-                                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                                                book.status === 'Available' || book.status === 'Published'
-                                                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
-                                                    : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                                            }`}>
-                                                {book.status === 'Available' || book.status === 'Published' ? 'Published' : 'Unpublished'}
-                                            </span>
-                                        </td>
-
-                                        {/* ⚡ Actions (Client Isolated) */}
-                                        <td className="py-4 text-right pr-2">
-                                            <EbookActions bookId={book._id} currentStatus={book.status} />
-                                        </td>
-                                    </tr>
-                                ))}
+                                            {/* ⚡ Status + Actions (সব এক রিঅ্যাক্টিভ কম্পোনেন্টে চলে গেছে) */}
+                                            <EbookActions 
+                                                bookId={currentId} 
+                                                initialPublished={book.isPublished} 
+                                                currentStatus={book.status} 
+                                            />
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
