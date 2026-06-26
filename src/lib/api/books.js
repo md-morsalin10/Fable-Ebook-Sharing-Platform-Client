@@ -16,3 +16,7 @@ export const getBookById = async (id, currentUserEmail) => {
     return serverFetch(`/api/books/${id}?userEmail=${currentUserEmail}`);
 }
 
+export const getFeaturedBooks = async () => {
+    return serverFetch("/api/features/books");
+}
+
