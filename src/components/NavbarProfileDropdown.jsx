@@ -79,8 +79,6 @@ const NavbarProfileDropdown = () => {
 
                         {/* Logout Separator & Action */}
                         <div className="border-t border-gray-800/60 my-1.5" />
-
-
                     </Dropdown.Menu>
                 </Dropdown.Popover>
             </Dropdown>

@@ -13,11 +13,11 @@ const Navbar = () => {
   const user = session?.user
 
    
-  // if(pathname.includes("dashboard")){
-  //   return null;
-  // }
+  if(pathname.includes("dashboard")){
+    return null;
+  }
 
-  // console.log(user, "from navbar");
+  console.log(user, "from navbar");
 
   const navLinks = [
     { label: "Home", href: "/" },
