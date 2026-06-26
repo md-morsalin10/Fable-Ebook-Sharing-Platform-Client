@@ -22,21 +22,13 @@ const Navbar = () => {
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "Browse Ebooks", href: "/browse-ebooks" },
-    { label: "Dashboard", href: `/dashboard/${user?.role}` },
 
   ];
 
-  // const dashboardLinks = {
-  //   seeker: "/dashboard/reader",
-  //   recruiter: "/dashboard/writer"
-  // }
 
-  // if (user?.email) {
-  //   navLinks.push({
-  //     label: "Dashboard",
-  //     href: dashboardLinks[user?.role || "seeker"]
-  //   })
-  // }
+  if (user?.email) {
+    navLinks.push({ label: "Dashboard", href: `/dashboard/${user?.role}` },)
+  }
 
   return (
     <nav className="bg-[#0B0F17] text-white border-b border-gray-800 sticky top-0 z-50 transition-colors duration-300">
