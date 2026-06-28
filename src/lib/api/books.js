@@ -1,11 +1,10 @@
 import { serverFetch } from "../core/server";
 
-const baseUrl = process.env.NEXT_PUBLIC_URL;
-
 export const getBooksByWriterId = async ({writerId}) => {
-  const response = await fetch(`${baseUrl}/api/books?writerId=${writerId}`);
-  const data = await response.json();
-  return data;
+  // const response = await fetch(`${baseUrl}/api/books?writerId=${writerId}`);
+  // const data = await response.json();
+  // return data;
+  return await serverFetch(`/api/books?writerId=${writerId}`);
 };
 
 export const getBooks = async () => {
@@ -17,6 +16,6 @@ export const getBookById = async (id, currentUserEmail) => {
 }
 
 export const getFeaturedBooks = async () => {
-    return serverFetch("/api/features/books");
+    return await serverFetch("/api/features/books");
 }
 

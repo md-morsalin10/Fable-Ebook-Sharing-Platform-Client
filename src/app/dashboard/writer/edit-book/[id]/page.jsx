@@ -3,25 +3,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { getClientToken } from '@/lib/core/tokenClient';
 
 const EditEbookPage = () => {
-    const { id } = useParams(); // URL থেকে বইয়ের আইডি নেওয়া
+    const { id } = useParams();
     const router = useRouter();
-    const fileInputRef = useRef(null); // ফাইল ইনপুট কন্ট্রোল করার জন্য রেফ
+    const fileInputRef = useRef(null);
     
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
     
-    // ফরমের স্টেটসমূহ
+    
+
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         genre: '',
         price: '',
-        coverImage: '' // ডাটাবেজ থেকে আসা ইমেজের URL বা নতুন ফাইলের Base64 স্ট্রিং ধারণ করবে
+        coverImage: '' 
     });
 
-    const [imagePreview, setImagePreview] = useState(''); // লাইভ ইমেজ প্রিভিউ দেখার জন্য
+    const [imagePreview, setImagePreview] = useState(''); 
 
     const genres = [
         { id: "fiction", name: "Fiction" },
@@ -32,11 +34,11 @@ const EditEbookPage = () => {
         { id: "horror", name: "Horror" }
     ];
 
-    // ১. পেজ লোড হওয়ার সাথে সাথে বইয়ের পুরাতন ডাটা ফেচ করা
     useEffect(() => {
         const fetchBookData = async () => {
+             
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/books/${id}`);
+                const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/books/${id}`);
                 const data = await res.json();
                 
                 if (res.ok) {
@@ -47,7 +49,6 @@ const EditEbookPage = () => {
                         price: data.price || '',
                         coverImage: data.coverImage || ''
                     });
-                    // ব্যাকএন্ড থেকে আসা এক্সিস্টিং ইমেজ লিংকটি প্রিভিউতে সেট করা
                     if (data.coverImage) {
                         setImagePreview(data.coverImage);
                     }
@@ -65,13 +66,13 @@ const EditEbookPage = () => {
         if (id) fetchBookData();
     }, [id]);
 
-    // সাধারণ ইনপুট ফিল্ড চেঞ্জ হ্যান্ডলার
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    // 🖼️ নতুন ইমেজ ফাইল সিলেক্ট এবং ইমিডিয়েট লোকাল প্রিভিউ হ্যান্ডলার
+
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -83,21 +84,21 @@ const EditEbookPage = () => {
 
         const reader = new FileReader();
         reader.onloadend = () => {
-            setImagePreview(reader.result); // ব্রাউজারে ইনস্ট্যান্ট ছবি দেখানোর জন্য
-            setFormData(prev => ({ ...prev, coverImage: reader.result })); // স্টেট আপডেট (Base64 স্ট্রিং জেনারেট হবে)
+            setImagePreview(reader.result);
+            setFormData(prev => ({ ...prev, coverImage: reader.result })); 
         };
         reader.readAsDataURL(file);
     };
 
-    // ২. আপডেট ডাটা সাবমিট হ্যান্ডলার (ImgBB কন্ডিশনাল আপলোড সহ)
+   
     const handleSubmit = async (e) => {
         e.preventDefault();
         setUpdating(true);
-
-        // শুরুতে ধরে নেওয়া হচ্ছে পুরাতন ইমেজ লিংকটিই অপরিবর্তিত থাকবে
+        const token = await getClientToken();
+        console.log(token, "from token")
+    
         let finalImageUrl = formData.coverImage; 
 
-        // 💡 চেক করা হচ্ছে ইউজার নতুন ছবি সিলেক্ট করেছে কি না (নতুন ছবি হলে সেটি data:image দিয়ে শুরু হবে)
         const isNewFileSelected = formData.coverImage.startsWith('data:image');
 
         if (isNewFileSelected) {
@@ -115,7 +116,7 @@ const EditEbookPage = () => {
                     const imgBbResult = await imgBbResponse.json();
 
                     if (imgBbResult.success) {
-                        finalImageUrl = imgBbResult.data.display_url; // ImgBB থেকে পাওয়া নতুন ডিরেক্ট লিংক
+                        finalImageUrl = imgBbResult.data.display_url; 
                     } else {
                         toast.error("ImgBB upload failed. Try again.");
                         setUpdating(false);
@@ -130,19 +131,22 @@ const EditEbookPage = () => {
             }
         }
 
-        // 🔄 ৩. এবার ফাইনাল ডাটা ব্যাকএন্ডের PATCH API-তে পাঠানো হচ্ছে
+      
         try {
             const updatedEbookData = {
                 title: formData.title,
                 description: formData.description,
                 genre: formData.genre,
                 price: parseFloat(formData.price),
-                coverImage: finalImageUrl // নতুন লিংক অথবা আগের লিংকটিই থাকবে
+                coverImage: finalImageUrl 
             };
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/books/update/${id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/books/update/${id}`, {
+               
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                    "authorization": `Bearer ${token}`
+                 },
                 body: JSON.stringify(updatedEbookData),
             });
 
@@ -150,7 +154,7 @@ const EditEbookPage = () => {
 
             if (res.ok) {
                 toast.success("Ebook updated successfully!");
-                router.push('/dashboard/writer/my-book'); // আপডেট শেষে লিস্ট পেজে ব্যাক করবে
+                router.push('/dashboard/writer/my-book');
             } else {
                 toast.error(data.message || "Failed to update ebook.");
             }
@@ -168,7 +172,7 @@ const EditEbookPage = () => {
 
     return (
         <div className="w-full min-h-screen flex items-center justify-center py-10 px-4 bg-[#06090F]">
-            {/* মেইন কন্টেইনার (AddEbook এর থিম কালার অনুযায়ী ম্যাচ করা) */}
+           
             <div className="w-full max-w-xl bg-[#111625] border border-[#1e2640] p-8 rounded-2xl shadow-2xl">
                 
                 <h2 className="text-2xl font-semibold text-[#e5b869] font-serif mb-6">
@@ -288,7 +292,6 @@ const EditEbookPage = () => {
                         </div>
                     </div>
 
-                    {/* সাবমিট বাটন */}
                     <button 
                         type="submit"
                         disabled={updating}

@@ -26,7 +26,7 @@ const Navbar = () => {
   ];
 
 
-  if (user?.email) {
+  if (user) {
     navLinks.push({ label: "Dashboard", href: `/dashboard/${user?.role}` },)
   }
 

@@ -21,7 +21,6 @@ const BrowseSkeleton = () => (
 );
 
 const AllEbooks = async () => {
-    // ব্যাকএন্ড API থেকে ডেটা ফেচিং
     let books = [];
     let error = null;
     

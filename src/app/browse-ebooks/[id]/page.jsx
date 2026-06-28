@@ -28,26 +28,22 @@ export default async function EbookDetailsPage({ params }) {
 
 
 async function BookDetailsContent({ id }) {
-    // কারেন্ট লগইন ইউজারের সেশন চেক
+
     const user = await getUserSeason();
     
-    // ডাটাবেজ থেকে বইয়ের মেইন ডাটা আনা
     const book = await fetchBookData(id, user?.email);
 
-    // যদি বই খুঁজে না পাওয়া যায়, তবে নট ফাউন্ড পেজ রিটার্ন করবে
     if (book === null) {
         return <BookNotFoundState />;
     }
 
-    // বুকমার্কের স্ট্যাটাস বের করা (ডিফল্ট ফলস)
     let isInitiallyBookmarked = false;
 
-    // ইউজার লগইন থাকলে বুকমার্ক লিস্ট চেক করবে
     if (user !== null && user !== undefined) {
         isInitiallyBookmarked = await checkBookmarkStatus(user.id, book);
     }
 
-    // ফাইনাল ডাটা ক্লায়েন্ট কম্পোনেন্টে পাঠিয়ে দেওয়া
+   
     return (
         <EbookDetailsClient 
             book={book} 
@@ -56,11 +52,6 @@ async function BookDetailsContent({ id }) {
     );
 }
 
-// ========================================================
-// ⚙️ ৩. ডাটা ফেচিং হেল্পার ফাংশন সমূহ
-// ========================================================
-
-// বইয়ের ডিটেইলস নিয়ে আসার সাধারণ ফাংশন
 async function fetchBookData(id, email) {
     try {
         const data = await getBookById(id, email);
@@ -71,7 +62,6 @@ async function fetchBookData(id, email) {
     }
 }
 
-// ইউজার এই বই বুকমার্ক করেছে কি না তা চেক করার সহজ ফাংশন
 async function checkBookmarkStatus(userId, book) {
     try {
         const currentBookId = book._id || book._id;

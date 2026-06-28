@@ -5,10 +5,9 @@ import { getBookmarksByUserId } from '@/lib/api/bookmark';
 import { getUserSeason } from '@/lib/core/Session';
 
 const WriterBookmarksPage = async () => {
-    // ১. কারেন্ট ইউজারের সেশন চেক করা
+
     const user = await getUserSeason();
 
-    // 🔒 ইউজার যদি লগইন না থাকে, তবে সিকিউরিটি গার্ড ইন্টারফেস দেখাবে
     if (!user) {
         return (
             <div className="min-h-[70vh] bg-[#060913] text-gray-100 flex flex-col items-center justify-center p-6">
@@ -25,9 +24,10 @@ const WriterBookmarksPage = async () => {
             </div>
         );
     }
+    
 
-    // ২. ডাটাবেজ থেকে বুকমার্ক ডাটা ফেচ করা
     const booksBookmarksData = (await getBookmarksByUserId(user.id)) || [];
+
 
     return (
         <div className="min-h-screen bg-[#060913] text-gray-100 py-10 px-4 sm:px-6 lg:px-8">
@@ -56,7 +56,7 @@ const WriterBookmarksPage = async () => {
                         </div>
                         <h3 className="text-lg font-bold text-white tracking-wide">No Bookmarks Found</h3>
                         <p className="text-gray-400 text-xs md:text-sm mt-2 max-w-xs mx-auto leading-relaxed">
-                            You haven't bookmarked any ebooks yet as a writer. Explore the library to save materials!
+                            You havent bookmarked any ebooks yet as a writer. Explore the library to save materials!
                         </p>
                         <Link href="/browse-ebooks" className="mt-6 inline-block px-6 py-2.5 bg-[#E5BA73] hover:bg-[#d4ab63] text-[#0E1420] text-xs font-bold rounded-xl transition-all shadow-md uppercase tracking-wider">
                             Browse Ebooks

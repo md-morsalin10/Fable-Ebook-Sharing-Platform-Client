@@ -1,6 +1,5 @@
 import DashboardNavbar from '@/components/Dashboard/DasboardNavbar';
 import { DashboardSideBar } from '@/components/Dashboard/DashboardSideBar';
-// 👈 নতুন নেভবারটি ইমপোর্ট করুন (আপনার পাথ অনুযায়ী)
 import React from 'react';
 
 const DashboardLayout = ({ children }) => {
@@ -14,8 +13,6 @@ const DashboardLayout = ({ children }) => {
 
             {/* Right Side: Main Content Wrapper */}
             <div className='flex-1 flex flex-col min-w-0 h-screen overflow-hidden'>
-                
-                {/* 👑 নতুন ড্যাশবোর্ড নেভিগেশন বার (ফিকমার মতো) */}
                 <DashboardNavbar />
 
                 {/* Scrollable Main Content Area with Figma Padding */}

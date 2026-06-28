@@ -16,14 +16,14 @@ export default async function WritersDashboardPage() {
   const user = await getUserSeason();
   const userId = user?.id;
 
-  // 📝 ১. শুধুমাত্র এই একটি এপিআই কল দিয়েই আপনার সব ডাটা চলে আসবে
+
   const booksSalesData = (await getPaymentDataByWriterId(userId)) || [];
 
-  // 📊 ২. একদম সহজ হিসাব (ফর-ইচ লুপ)
-  let totalBooksCount = booksSalesData.length; // টোটাল আপলোড করা বই
+
+  let totalBooksCount = booksSalesData.length; 
   let totalEarnings = 0;
   
-  // ইউনিক রিডার ট্র্যাক করার জন্য সেট (Set)
+ 
   const uniqueReadersSet = new Set();
 
   booksSalesData.forEach(book => {

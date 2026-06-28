@@ -1,9 +1,11 @@
 import { getBooksByWriterId } from '@/lib/api/books';
-import { getUserSeason } from '@/lib/core/Session';
+import { getUserSeason, getUserToken } from '@/lib/core/Session';
 import Image from 'next/image';
 import React from 'react';
 import { Book } from '@gravity-ui/icons';
 import EbookActions from '@/components/Dashboard/EbookActions'; 
+import { headers } from 'next/headers';
+import { auth } from '@/lib/auth';
 
 const WriterBooks = async () => {
     const user = await getUserSeason();
@@ -11,6 +13,15 @@ const WriterBooks = async () => {
 
     console.log("Current Logged-in Writer ID:", currentWriterId);
 
+  
+//     const session = await auth.api.getToken({
+//     headers: await headers()
+//   })
+//   const token = session?.token || null;
+
+//   console.log(token, "from token")
+
+    // const books = []
     const books = await getBooksByWriterId({ writerId: currentWriterId });
     console.log("Fetched Books from DB:", books);
 
