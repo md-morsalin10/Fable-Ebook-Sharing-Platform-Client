@@ -5,6 +5,8 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { Switch } from "@heroui/react";
 import { Check, EyeSlash } from "@gravity-ui/icons";
+import { getClientToken } from '@/lib/core/tokenClient';
+import DeleteModal from './DeleteModal';
 
 const EbookActions = ({ bookId, currentStatus }) => {
     // 🎯 ডাটাবেজের স্ট্যাটাস সরাসরি লোকাল স্টেটে ট্র্যাক করা হচ্ছে
@@ -18,20 +20,22 @@ const EbookActions = ({ bookId, currentStatus }) => {
     const handleTogglePublish = async () => {
         if (loading || isSold) return;
         setLoading(true);
+        const token = await getClientToken();
 
-        // টগল লজিক: published থাকলে unpublished হবে, আর unpublished থাকলে published হবে
         const nextStatus = isPublished ? 'unpublished' : 'published';
 
         try {
-            // 🚀 আপনার নতুন ইউনিভার্সাল এপিআই রুটটি কল করা হচ্ছে
             const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/books/status/${bookId}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    "authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({ status: nextStatus }),
             });
-            
+
             const data = await res.json();
-            
+
             if (res.ok) {
                 setStatus(nextStatus);
                 toast.success(data.message || `Book ${nextStatus === 'published' ? 'Published' : 'Unpublished'} successfully!`);
@@ -50,29 +54,6 @@ const EbookActions = ({ bookId, currentStatus }) => {
         // 🛡️ শুধুমাত্র Published হলেই এডিট পেজে যাবে, নতুবা ব্লকড
         if (!isPublished) return;
         router.push(`/dashboard/writer/edit-book/${bookId}`);
-    };
-
-    const handleDelete = async () => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this ebook?");
-        if (!confirmDelete) return;
-
-        try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/books/delete/${bookId}`, {
-                method: 'DELETE',
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                toast.success(data.message || "Ebook deleted successfully!");
-                window.location.reload(); 
-            } else {
-                toast.error(data.message || "Failed to delete ebook.");
-            }
-        } catch (error) {
-            console.error("Delete error:", error);
-            toast.error("Something went wrong during deletion.");
-        }
     };
 
     return (
@@ -97,8 +78,8 @@ const EbookActions = ({ bookId, currentStatus }) => {
             {/* ⚙️ ২. অ্যাকশন বাটনসমূহ এবং সুইচ কন্ট্রোল */}
             <td className="py-4 text-right pr-2">
                 <div className="flex items-center justify-end gap-3">
-                    <Switch 
-                        isSelected={isPublished} 
+                    <Switch
+                        isSelected={isPublished}
                         onChange={handleTogglePublish}
                         disabled={loading || isSold}
                         aria-label="Toggle Publish Status"
@@ -119,21 +100,18 @@ const EbookActions = ({ bookId, currentStatus }) => {
                     </Switch>
 
                     {/* 📝 ৩. এডিট বাটন (শুধুমাত্র published না হলে ডিজেবল ও ওপেসিটি কম থাকবে) */}
-                    <button 
+                    <button
                         onClick={handleEdit}
                         disabled={!isPublished}
-                        className={`text-xs px-2.5 py-1.5 rounded-lg border font-medium transition-all ${
-                            !isPublished 
-                                ? 'bg-gray-900/40 text-gray-600 border-gray-800/50 cursor-not-allowed opacity-40' 
+                        className={`text-xs px-2.5 py-1.5 rounded-lg border font-medium transition-all ${!isPublished
+                                ? 'bg-gray-900/40 text-gray-600 border-gray-800/50 cursor-not-allowed opacity-40'
                                 : 'bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20'
-                        }`}
+                            }`}
                     >
                         Edit
                     </button>
 
-                    <button onClick={handleDelete} className="text-xs px-2.5 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all">
-                        Delete
-                    </button>
+                    <DeleteModal bookId={bookId} />
                 </div>
             </td>
         </>
