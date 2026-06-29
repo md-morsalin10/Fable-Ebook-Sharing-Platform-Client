@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion"; 
 
 const topWriters = [
   {
@@ -27,42 +28,81 @@ const topWriters = [
   },
 ];
 
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2, 
+    },
+  },
+};
+
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.6, ease: "easeOut" } 
+  },
+};
+
 const TopWriters = () => {
   return (
-    <section className="bg-[#0B0F17] py-24 px-4 sm:px-6 lg:px-8 select-none">
+    <section className="bg-[#0B0F17] py-24 px-4 sm:px-6 lg:px-8 select-none overflow-hidden">
       <div className="max-w-7xl mx-auto">
         
-        {/* Section Title */}
-        <div className="text-center mb-16">
+        {/* 🎬 Section Title with Motion */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#E5BA73] tracking-wide">
             Master Storytellers
           </h2>
           <p className="text-gray-400 text-sm mt-3 font-light max-w-md mx-auto">
             Meet the architects behind the worlds you love.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Writers Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        {/* 🎬 Writers Grid with Stagger Effect */}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto"
+        >
           {topWriters.map((writer) => (
-            <div
+            <motion.div
               key={writer.id}
-              className="bg-[#161B26] rounded-2xl border border-gray-800/40 p-8 flex flex-col items-center justify-center text-center shadow-2xl hover:border-gray-700/60 transition-all duration-300 group"
+              variants={cardVariants}
+              whileHover={{ 
+                y: -10, 
+                borderColor: "rgba(229, 186, 115, 0.4)",
+                boxShadow: "0px 20px 40px rgba(0, 0, 0, 0.5)" 
+              }}
+              className="bg-[#161B26] rounded-2xl border border-gray-800/40 p-8 flex flex-col items-center justify-center text-center shadow-2xl transition-all duration-300 group"
             >
               
-              {/* FIXED: Writer Avatar Container with Perfect Rounding */}
+              {/* Writer Avatar Container */}
               <div className="relative w-32 h-32 mb-6 flex items-center justify-center">
-                {/* বাইরের গ্লোয়িং এবং বর্ডার রিং */}
+                {/* বাইরের গ্লোয়িং রিং */}
                 <div className={`absolute inset-0 rounded-full border-4 ${writer.borderColor} transition-transform duration-500 group-hover:scale-105`} />
                 
-                {/* ভেতরের একচুয়াল ইমেজ কন্টেইনার যা ১০০% রাউন্ডেড মাস্ক করবে */}
+              
                 <div className="relative w-[112px] h-[112px] rounded-full overflow-hidden bg-gray-950">
                   <Image
                     src={writer.avatar}
                     alt={writer.name}
                     fill
                     sizes="112px"
-                    className="object-cover rounded-full" 
+                    className="object-cover rounded-full transition-transform duration-500 group-hover:scale-110" 
                   />
                 </div>
               </div>
@@ -80,14 +120,14 @@ const TopWriters = () => {
               {/* Button */}
               <Link
                 href={`/writers/${writer.id}`}
-                className="bg-[#E5BA73] text-[#0B0F17] px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider shadow-lg shadow-amber-950/10 hover:bg-[#d4a75e] transition-all duration-200 transform hover:-translate-y-0.5"
+                className="bg-[#E5BA73] text-[#0B0F17] px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider shadow-lg shadow-amber-950/10 hover:bg-[#d4a75e] transition-all duration-200 block"
               >
                 View Books
               </Link>
 
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
       </div>
     </section>

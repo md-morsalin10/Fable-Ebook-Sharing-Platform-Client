@@ -38,7 +38,12 @@ const EditEbookPage = () => {
         const fetchBookData = async () => {
              
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/books/${id}`);
+                const token = await getClientToken();
+                const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/books/${id}`,{
+                    headers: {
+                        "authorization": `Bearer ${token}`
+                    }
+                });
                 const data = await res.json();
                 
                 if (res.ok) {

@@ -2,10 +2,12 @@ import { stripe } from '@/lib/stripe'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createBookPayment } from '@/lib/action/bookPayment'
+import { getUserSeason } from '@/lib/core/Session';
 
 
 export default async function Success({ searchParams }) {
-  const { session_id } = await searchParams
+  const { session_id } = await searchParams;
+  const user = await getUserSeason();
 
   if (!session_id)
     throw new Error('Please provide a valid session_id (`cs_test_...`)')
@@ -92,7 +94,7 @@ export default async function Success({ searchParams }) {
 
             {/* 🚀 ড্যাশবোর্ড / হোম অ্যাকশন বাটন */}
             <Link
-              href="/dashboard"
+              href={`/dashboard/${user?.role}`}
               className="block w-full relative overflow-hidden bg-gradient-to-r from-[#E5BA73] to-[#C29B53] text-[#0E1420] font-sans font-bold text-xs uppercase tracking-widest py-4 px-6 rounded-xl transition-all duration-300 shadow-[0_4px_20px_rgba(229,186,115,0.15)] hover:shadow-[0_4px_25px_rgba(229,186,115,0.3)] hover:scale-[1.01] active:scale-[0.99]"
             >
               Go to Creator Dashboard →

@@ -16,23 +16,22 @@ export default async function WritersDashboardPage() {
   const user = await getUserSeason();
   const userId = user?.id;
 
-
+  
   const booksSalesData = (await getPaymentDataByWriterId(userId)) || [];
 
-
-  let totalBooksCount = booksSalesData.length; 
+  let totalSalesCount = booksSalesData.length; 
   let totalEarnings = 0;
-  
- 
   const uniqueReadersSet = new Set();
 
   booksSalesData.forEach(book => {
-
-    if (book.sessionId || book.buyerId) {
+    // পেমেন্ট সেশন বা বায়ার আইডি থাকলে আর্নিং ক্যালকুলেট হবে
+    if (book.sessionId || book.buyerId || book.price) {
       totalEarnings += Number(book.price || 0); 
       
-      if (book.userId || book.buyerId) {
-        uniqueReadersSet.add(book.userId || book.buyerId); 
+      // ইউনিক রিডার ট্র্যাক করা
+      const readerId = book.userId || book.buyerId || book.buyerEmail;
+      if (readerId) {
+        uniqueReadersSet.add(readerId); 
       }
     }
   });
@@ -40,13 +39,14 @@ export default async function WritersDashboardPage() {
   const totalReadersCount = uniqueReadersSet.size;
 
   const stats = [
-    { id: 1, title: 'Total Ebooks', value: totalBooksCount, change: 'Uploaded by you', color: 'text-amber-400', icon: Book },
+    { id: 1, title: 'Total Sales', value: totalSalesCount, change: 'Total copies sold', color: 'text-amber-400', icon: Book },
     { id: 2, title: 'Total Readers', value: totalReadersCount, change: 'Unique buyers', color: 'text-blue-400', icon: Person },
     { id: 3, title: 'Total Earnings', value: `$${totalEarnings.toFixed(2)}`, change: 'Lifetime earnings', color: 'text-emerald-400', icon: ArrowRightArrowLeft },
     { id: 4, title: 'Avg. Rating', value: '4.8', change: 'Community standard', color: 'text-yellow-400', icon: Star },
   ];
 
-  const recentBooks = booksSalesData.slice(0, 3);
+  // সর্বশেষ ৩টি বিক্রির রেকর্ড নেওয়া হচ্ছে
+  const recentSales = booksSalesData.slice(0, 3);
 
   return (
     <div className="min-h-screen bg-[#0E1420] text-gray-100 p-6 lg:p-10">
@@ -58,7 +58,7 @@ export default async function WritersDashboardPage() {
             Writers Dashboard
           </h1>
           <p className="text-sm text-gray-400 mt-1">
-            Welcome back, {user?.name || 'Writer'}! Here is an overview of your published books and sales performance.
+            Welcome back, {user?.name || 'Writer'}! Here is an overview of your book sales performance.
           </p>
         </div>
 
@@ -95,15 +95,15 @@ export default async function WritersDashboardPage() {
       {/* 📑 Bottom Layout Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        {/* 📚 Recent Ebooks Table */}
+        {/* 💰 Recent Sales Table */}
         <div className="lg:col-span-2 bg-[#0B0F17] border border-gray-800/60 rounded-2xl p-6 shadow-xl">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-bold text-white flex items-center gap-2">
-              <Book className="text-[#E5BA73] w-4 h-4" /> Recent Ebooks
+              <ArrowRightArrowLeft className="text-[#E5BA73] w-4 h-4" /> Recent Sales
             </h2>
-            {/* <Link href="/dashboard/writer/manage-ebook" className="text-xs text-[#E5BA73] hover:underline">
-              View All Books
-            </Link> */}
+            <Link href="/dashboard/writer/sales-history" className="text-xs text-[#E5BA73] hover:underline">
+              View Sales History
+            </Link>
           </div>
  
           <div className="overflow-x-auto">
@@ -112,36 +112,34 @@ export default async function WritersDashboardPage() {
                 <tr className="border-b border-gray-800 text-xs uppercase tracking-wider text-gray-400">
                   <th className="pb-4 font-semibold">Book Details</th>
                   <th className="pb-4 font-semibold">Status</th>
-                  <th className="pb-4 font-semibold text-right">Price</th>
+                  <th className="pb-4 font-semibold text-right">Revenue</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800/50 text-sm">
-                {recentBooks.length === 0 ? (
+                {recentSales.length === 0 ? (
                   <tr>
                     <td colSpan="3" className="text-center py-8 text-gray-500">
-                      You haven't uploaded any books yet.
+                      No sales records found yet.
                     </td>
                   </tr>
                 ) : (
-                  recentBooks.map((book) => (
-                    <tr key={book._id?.$oid || book._id} className="group hover:bg-gray-900/20 transition-colors">
+                  recentSales.map((sale) => (
+                    <tr key={sale._id?.$oid || sale._id} className="group hover:bg-gray-900/20 transition-colors">
                       <td className="py-4 pr-4">
                         <div className="font-semibold text-white group-hover:text-[#E5BA73] transition-colors">
-                          {book.title}
+                          {sale.title || "Untitled Book"}
                         </div>
-                        <div className="text-xs text-gray-400 mt-0.5 capitalize">{book.genre}</div>
+                        <div className="text-xs text-gray-400 mt-0.5">
+                          Buyer: {sale.userName || sale.userEmail || "Reader"}
+                        </div>
                       </td>
                       <td className="py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                          book.sessionId || book.status === 'sold'
-                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
-                            : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                        }`}>
-                          {book.sessionId || book.status === 'sold' ? 'Sold' : 'Available'}
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                          Sold
                         </span>
                       </td>
                       <td className="py-4 text-right font-semibold text-white">
-                        ${Number(book.price).toFixed(2)}
+                        ${Number(sale.price || 0).toFixed(2)}
                       </td>
                     </tr>
                   ))

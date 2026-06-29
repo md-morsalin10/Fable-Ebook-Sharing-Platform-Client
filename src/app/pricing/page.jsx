@@ -6,11 +6,11 @@ import { authClient } from "@/lib/auth-client";
 export default function WriterPricingPage() {
     const [loading, setLoading] = useState(false);
     
-    // 👥 Better-Auth সেশন রিড করা
+   
     const { data: session } = authClient.useSession();
     const user = session?.user;
 
-    // 🔄 ফর্ম সাবমিট হলে লোডিং ট্রিগার করার ফাংশন
+  
     const handleSubmit = () => {
         setLoading(true);
     };
@@ -114,14 +114,14 @@ export default function WriterPricingPage() {
                         </div>
                     </div>
 
-                    {/* 🚀 মডার্ন আল্ট্রা-লাক্স বাটন */}
+        
                     <form action="/api/writersPayment" method="POST" onSubmit={handleSubmit}>
                         <button
                             type="submit"
                             disabled={loading}
                             className="w-full relative group/btn overflow-hidden bg-gradient-to-r from-[#E5BA73] to-[#C29B53] disabled:from-gray-800 disabled:to-gray-900 disabled:text-gray-500 disabled:cursor-not-allowed text-[#0E1420] font-sans font-bold text-xs uppercase tracking-widest py-4 px-6 rounded-xl transition-all duration-300 shadow-[0_4px_20px_rgba(229,186,115,0.15)] hover:shadow-[0_4px_25px_rgba(229,186,115,0.3)] hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2"
                         >
-                            {/* বাটন শাইন ইফেক্ট */}
+                    
                             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:animate-shine"></span>
                             
                             {loading ? (
@@ -138,7 +138,7 @@ export default function WriterPricingPage() {
                         </button>
                     </form>
 
-                    {/* 🔒 সিকিউরিটি ফুটনোট */}
+        
                     <div className="mt-6 flex items-center justify-center gap-6 text-[10px] text-gray-500 tracking-wider font-medium uppercase border-t border-gray-800/40 pt-5">
                         <span className="flex items-center gap-1.5">
                             <span className="text-[#E5BA73]">🛡️</span> Stripe Secure SSL
@@ -152,7 +152,7 @@ export default function WriterPricingPage() {
                 </div>
             </div>
 
-            {/* শাইন অ্যানিমেশনের জন্য গ্লোবাল স্টাইল */}
+
             <style jsx global>{`
                 @keyframes shine {
                     100% { transform: translateX(100%); }

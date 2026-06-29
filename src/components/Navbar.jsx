@@ -17,7 +17,7 @@ const Navbar = () => {
     return null;
   }
 
-  console.log(user, "from navbar");
+  // console.log(user, "from navbar");
 
   const navLinks = [
     { label: "Home", href: "/" },
