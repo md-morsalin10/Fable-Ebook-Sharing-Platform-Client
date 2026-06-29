@@ -4,9 +4,9 @@
 
 **A premium full-stack digital platform connecting readers with talented writers.**
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Site-E5BA73?style=for-the-badge)](https://fable-ebook.vercel.app)
-[![Client Repo](https://img.shields.io/badge/GitHub-Client_Repo-181717?style=for-the-badge&logo=github)](https://github.com/md-morsalin10/fable-client)
-[![Server Repo](https://img.shields.io/badge/GitHub-Server_Repo-181717?style=for-the-badge&logo=github)](https://github.com/md-morsalin10/fable-server)
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Site-E5BA73?style=for-the-badge)](https://fable-ebook-sharing-client.vercel.app)
+[![Client Repo](https://img.shields.io/badge/GitHub-Client_Repo-181717?style=for-the-badge&logo=github)](https://github.com/md-morsalin10/Fable-Ebook-Sharing-Platform-Client)
+[![Server Repo](https://img.shields.io/badge/GitHub-Server_Repo-181717?style=for-the-badge&logo=github)](https://github.com/md-morsalin10/Fable-Ebook-Sharing-Platform-Server)
 
 ![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=flat-square&logo=nextdotjs)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white)
@@ -48,10 +48,10 @@ The platform features **three distinct user roles**, a **Stripe payment integrat
 
 | Resource | URL |
 |----------|-----|
-| 🌐 Live Site | [fable-ebook.vercel.app](https://fable-ebook.vercel.app) |
-| 🖥️ Client Repo | [github.com/md-morsalin10/fable-client](https://github.com/md-morsalin10/fable-client) |
-| ⚙️ Server Repo | [github.com/md-morsalin10/fable-server](https://github.com/md-morsalin10/fable-server) |
-| 🔑 Admin Login | `admin@fable.com` / `Admin@123` |
+| 🌐 Live Site | [fable-ebook.vercel.app](https://fable-ebook-sharing-client.vercel.app) |
+| 🖥️ Client Repo | [github.com/md-morsalin10/fable-client](https://github.com/md-morsalin10/Fable-Ebook-Sharing-Platform-Client) |
+| ⚙️ Server Repo | [github.com/md-morsalin10/fable-server](https://github.com/md-morsalin10/Fable-Ebook-Sharing-Platform-Server) |
+| 🔑 Admin Login | `admin@gmail.com` / `Admin@123` |
 
 ---
 
@@ -267,26 +267,6 @@ Writer → "Complete Setup" → POST /api/payment/create-checkout-session
 | `GET` | `/api/bookmarks` | Get user bookmarks |
 | `POST` | `/api/bookmarks/toggle` | Add/remove bookmark |
 
----
-
-## 🔑 Environment Variables
-
-### Client (`fable-client/.env.local`)
-```env
-NEXT_PUBLIC_URL=https://your-server.onrender.com
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
-NEXT_PUBLIC_IMGBB_API_KEY=your_imgbb_key
-BETTER_AUTH_SECRET=your_secret
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-```
-
-### Server (`fable-server/.env`)
-```env
-MONGO_URI=mongodb+srv://...
-STRIPE_SECRET_KEY=sk_test_...
-PORT=5000
-```
 
 ---
 
@@ -298,23 +278,7 @@ PORT=5000
 - Stripe account
 - imgBB API key
 
-### Client Setup
-```bash
-git clone https://github.com/md-morsalin10/fable-client
-cd fable-client
-npm install
-# create .env.local and add variables
-npm run dev
-```
 
-### Server Setup
-```bash
-git clone https://github.com/md-morsalin10/fable-server
-cd fable-server
-npm install
-# create .env and add variables
-node index.js
-```
 
 ---
 
@@ -359,7 +323,7 @@ Diploma in Computer Technology — Dinajpur Polytechnic Institute (2025)
 Web Development Training — Programming Hero
 
 [![GitHub](https://img.shields.io/badge/GitHub-md--morsalin10-181717?style=flat-square&logo=github)](https://github.com/md-morsalin10)
-[![Portfolio](https://img.shields.io/badge/Portfolio-morsalin--portfolio.vercel.app-E5BA73?style=flat-square)](https://morsalin-portfolio.vercel.app)
+[![Portfolio](https://img.shields.io/badge/Portfolio-morsalin--portfolio.vercel.app-E5BA73?style=flat-square)](https://morsalin-portfolio.vercel.app/)
 
 </div>
 
