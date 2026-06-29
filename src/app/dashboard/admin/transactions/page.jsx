@@ -1,4 +1,3 @@
-// src/app/dashboard/admin/transactions/page.jsx (আপনার পাথ অনুযায়ী)
 import { getAllPayment } from '@/lib/api/bookPayment';
 import React from 'react';
 import TransactionsClient from './TransactionsClient';

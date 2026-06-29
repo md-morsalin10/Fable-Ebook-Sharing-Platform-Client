@@ -4,7 +4,6 @@ import React from 'react';
 
 
 const AllUsersPage = async () => {
-    // সার্ভার সাইড থেকে ডাটা ফেচ করা
     const allUsers = await getAllUsers() || [];
   
     return (

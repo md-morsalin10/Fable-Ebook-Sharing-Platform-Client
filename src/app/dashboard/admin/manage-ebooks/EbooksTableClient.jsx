@@ -5,6 +5,7 @@ import { TrashBin, Magnifier, CloudArrowUpIn, EyesLookLeft } from "@gravity-ui/i
 import { BsCloudArrowDown } from "react-icons/bs";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import { getClientToken } from "@/lib/core/tokenClient";
 
 const TABLE_COLS = ["Book Info", "Writer", "Price", "Status", "Actions"];
 const API = process.env.NEXT_PUBLIC_URL;
@@ -13,9 +14,10 @@ export default function EbooksTableClient({ initialBooks = [] }) {
   const [books, setBooks] = useState(initialBooks);
   const [loadingId, setLoadingId] = useState("");
 
-  // ── ১. পাবলিশ / আনপাবলিশ হ্যান্ডলার ──────────────────────────────────────────
+
   const handleToggleStatus = async (bookId, currentStatus) => {
-    // 🛡️ যদি অলরেডি sold হয় তবে কোনো অ্যাকশন হবে না
+    const token = await getClientToken();
+  
     if (currentStatus?.toLowerCase() === "sold") return;
 
     setLoadingId(bookId);
@@ -24,7 +26,9 @@ export default function EbooksTableClient({ initialBooks = [] }) {
     try {
       const res = await fetch(`${API}/api/admin/books/status/${bookId}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+          "authorization": `Bearer ${token}`
+         },
         body: JSON.stringify({ status: newStatus }),
       });
 
@@ -45,19 +49,24 @@ export default function EbooksTableClient({ initialBooks = [] }) {
     }
   };
 
-  // ── ২. ডিলিট হ্যান্ডলার ──────────────────────────────────────────────────────
+ 
   const handleDelete = async (bookId, currentStatus) => {
-    // 🛡️ ট্রানজেকশন ডেটার নিরাপত্তার জন্য sold বই ডিলিট করা ব্লক করা ভালো
+  
     if (currentStatus?.toLowerCase() === "sold") {
       toast.error("Sold out books cannot be deleted for record safety.");
       return;
     }
-
-    if (!confirm("Are you sure you want to delete this book?")) return;
-    setLoadingId(bookId);
+    
+    const token = await getClientToken();
 
     try {
-      const res = await fetch(`${API}/api/admin/books/${bookId}`, { method: "DELETE" });
+      const res = await fetch(`${API}/api/admin/books/${bookId}`,
+         { method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "authorization": `Bearer ${token}`
+          }
+          });
 
       if (res.ok) {
         const remainingBooks = books.filter((book) => {

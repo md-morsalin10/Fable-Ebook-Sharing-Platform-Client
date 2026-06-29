@@ -12,7 +12,7 @@ export default async function EbookDetailsPage({ params }) {
 
     return (
         <div className="min-h-screen bg-[#0E1420] text-gray-100 p-6 md:p-12 lg:p-16 font-sans">
-            
+
             <div className="max-w-6xl mx-auto mb-8 text-xs text-gray-500 tracking-wider uppercase flex items-center gap-2">
                 <Link href="/browse-ebooks" className="hover:text-gray-300 transition-colors">Ebooks</Link>
                 <span>/</span>
@@ -30,7 +30,7 @@ export default async function EbookDetailsPage({ params }) {
 async function BookDetailsContent({ id }) {
 
     const user = await getUserSeason();
-    
+
     const book = await fetchBookData(id, user?.email);
 
     if (book === null) {
@@ -43,11 +43,11 @@ async function BookDetailsContent({ id }) {
         isInitiallyBookmarked = await checkBookmarkStatus(user.id, book);
     }
 
-   
+
     return (
-        <EbookDetailsClient 
-            book={book} 
-            isInitiallyBookmarked={isInitiallyBookmarked} 
+        <EbookDetailsClient
+            book={book}
+            isInitiallyBookmarked={isInitiallyBookmarked}
         />
     );
 }
@@ -65,14 +65,15 @@ async function fetchBookData(id, email) {
 async function checkBookmarkStatus(userId, book) {
     try {
         const currentBookId = book._id || book._id;
-        
+
         const userBookmarks = await getBookmarksByUserId(userId);
-        
-        if (!userBookmarks) {
+
+        if (!userBookmarks || !Array.isArray(userBookmarks)) {
+            console.warn("Expected bookmarks to be an array, but received:", userBookmarks);
             return false;
         }
 
-        const hasBookmark = userBookmarks.some(function(bookmark) {
+        const hasBookmark = userBookmarks.some(function (bookmark) {
             const savedBookId = bookmark.bookId?.$oid || bookmark.bookId;
             return savedBookId === currentBookId;
         });
@@ -83,7 +84,6 @@ async function checkBookmarkStatus(userId, book) {
         return false;
     }
 }
-
 
 const BookNotFoundState = () => {
     return (

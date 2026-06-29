@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react'; // 👈 useState ইমপোর্ট করা হলো
+import React, { useState } from 'react';
 import { 
   BsBagCheck, 
   BsGrid3X3Gap, 
@@ -11,28 +11,23 @@ import {
 
 export default function TransactionsClient({ payments = [], writersPayment = [] }) {
   
-  // ── 🔍 ফিল্টারিং স্টেট ──
+
   // 'all' = সব দেখাবে, 'purchase' = শুধু বই কেনা, 'creator' = শুধু ক্রিয়েটর পাস
   const [filter, setFilter] = useState('all'); 
-
-  // ── 📊 ক্যালকুলেশনের জন্য প্রাথমিক ভেরিয়েবল ──
   let purchasePaymentsTotal = 0;
   let publishingFeesTotal = 0;
 
-  // ১. 🛒 রিডারদের বই কেনার টোটাল হিসাব
   payments.forEach((pay) => {
     purchasePaymentsTotal += Number(pay.price || 0);
   });
 
-  // ২. ✍️ রাইটারদের ওয়ান-টাইম অ্যাক্টিভেশন ফি হিসাব
+
   writersPayment.forEach((writer) => {
     publishingFeesTotal += Number(writer.price || 19.99);
   });
 
-  // সর্বমোট আয়
   const totalRevenue = purchasePaymentsTotal + publishingFeesTotal;
 
-  // ── 🔀 ২টা ভিন্ন অ্যারের ডাটাকে ম্যাপিং করা ──
   const cleanPurchases = payments.map(pay => ({
     id: pay._id,
     trId: pay.sessionId ? pay.sessionId.slice(8, 16).toUpperCase() : "N/A",
@@ -53,20 +48,18 @@ export default function TransactionsClient({ payments = [], writersPayment = [] 
     date: writer.createdAt || new Date()
   }));
 
-  // দুটি ডাটা একত্রে মার্জ করে ১টি মাস্টার অ্যারে বানানো হলো
   const allTransactions = [...cleanPurchases, ...cleanWriterFees];
 
-  // ── 🎯 ফিল্টার লজিক অনুযায়ী ডাটা আলাদা করা ──
+
   const filteredTransactions = allTransactions.filter(item => {
     if (filter === 'purchase') return item.type === "Purchase";
     if (filter === 'creator') return item.type === "Creator Pass";
-    return true; // 'all' হলে সব দেখাবে
+    return true; 
   });
 
   return (
     <div className="min-h-screen bg-[#0E1420] text-gray-100 p-4">
       
-      {/* 📝 Top Bar */}
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-xs uppercase tracking-wider font-bold text-[#524534]">Financial Oversight</h1>
@@ -77,7 +70,6 @@ export default function TransactionsClient({ payments = [], writersPayment = [] 
         </button>
       </div>
 
-      {/* 📊 ৩টি অ্যানালিটিক্স কার্ড সেকশন */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
         {/* Total Revenue */}
         <div className="bg-[#0B0F17] border border-white/5 rounded-2xl p-6 flex items-center gap-4">
@@ -115,7 +107,6 @@ export default function TransactionsClient({ payments = [], writersPayment = [] 
         </div>
       </div>
 
-      {/* 👑 ফিল্টারিং ট্যাব বাটনস */}
       <div className="flex gap-2 mb-4 bg-[#0B0F17] p-1 rounded-xl w-fit border border-white/5">
         <button 
           onClick={() => setFilter('all')}
@@ -137,7 +128,7 @@ export default function TransactionsClient({ payments = [], writersPayment = [] 
         </button>
       </div>
 
-      {/* 📋 প্লেইন HTML ও Tailwind টেবিল */}
+
       <div className="bg-[#0B0F17] border border-white/5 rounded-2xl p-4 overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -152,7 +143,6 @@ export default function TransactionsClient({ payments = [], writersPayment = [] 
           </thead>
 
           <tbody className="divide-y divide-white/5">
-            {/* 💡 এখানে মাস্টার অ্যারের বদলে ফিল্টার করা অ্যারে (filteredTransactions) ম্যাপ করা হয়েছে */}
             {filteredTransactions.map((item, idx) => {
               const isPurchase = item.type === "Purchase";
               const dateString = new Date(item.date).toLocaleDateString('en-US', { 

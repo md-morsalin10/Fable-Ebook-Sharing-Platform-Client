@@ -7,10 +7,8 @@ import {
     PieChart, Pie, Cell, Legend, CartesianGrid, Sector
 } from 'recharts';
 
-// প্রিমিয়াম ভাইব্রেন্ট কালার প্যালেট
 const COLORS = ['#E5BA73', '#00C49F', '#3b82f6', '#a855f7', '#ec4899'];
 
-// পাই চার্টের হোভার অ্যানিমেশন (Active Shape) রেন্ডারার
 const renderActiveShape = (props) => {
     const RADIAN = Math.PI / 180;
     const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
@@ -26,11 +24,9 @@ const renderActiveShape = (props) => {
 
     return (
         <g>
-            {/* সেন্টারে টেক্সট */}
             <text x={cx} y={cy} dy={4} textAnchor="middle" fill="#fff" className="font-semibold text-sm">
                 {payload.genre}
             </text>
-            {/* アクティブスライスグロー */}
             <Sector
                 cx={cx}
                 cy={cy}
@@ -49,10 +45,10 @@ const renderActiveShape = (props) => {
                 outerRadius={outerRadius + 10}
                 fill={fill}
             />
-            {/* কানেক্টিং লাইনস */}
+         
             <path d={`M${sx},${sy}L${mx},${my}H${ex}`} stroke={fill} fill="none" />
             <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-            {/* ডেটা লেবেল */}
+         
             <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#9ca3af" fontSize={12}>
                 {`${value} Ebooks`}
             </text>
@@ -63,7 +59,7 @@ const renderActiveShape = (props) => {
     );
 };
 
-// কাস্টম প্রিমিয়াম ব্লারツールチップ
+
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
@@ -87,11 +83,11 @@ const AdminDashboardHome = () => {
     const [activeIndex, setActiveIndex] = useState(0);
 
     useEffect(() => {
-        // 👑 সমাধান ২: useEffect-এর ভেতরে একটি async ফাংশন তৈরি করে কল করা হলো
+    
         const fetchAnalytics = async () => {
             try {
                 const data = await getAnalytics();
-                setAnalytics(data); // 👑 ডাটা স্টেটে সেট করা হলো
+                setAnalytics(data);
             } catch (err) {
                 console.error("Analytics fetch error:", err);
             } finally {
@@ -105,14 +101,14 @@ const AdminDashboardHome = () => {
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-[#0b0f19] text-white p-6">
-                {/* 🌀 গ্লোয়িং থ্রি-ডট বা রিং স্পিনার */}
+             
                 <div className="relative flex items-center justify-center w-20 h-20 mb-6">
                     <div className="absolute w-full h-full border-4 border-t-[#E5BA73] border-r-transparent border-b-[#3b82f6] border-l-transparent rounded-full animate-spin"></div>
                     <div className="absolute w-12 h-12 border-4 border-t-transparent border-r-[#00C49F] border-b-transparent border-l-[#a855f7] rounded-full animate-spin [animation-duration:1.5s] reverse"></div>
                     <div className="w-4 h-4 bg-white rounded-full animate-ping"></div>
                 </div>
 
-                {/* 📝 স্টাইলিশ টেক্সট লোডার */}
+              
                 <div className="text-center space-y-2">
                     <h3 className="text-xl font-bold tracking-wider bg-gradient-to-r from-[#E5BA73] via-white to-[#3b82f6] bg-clip-text text-transparent animate-pulse">
                         Synchronizing Analytics Hub
@@ -122,7 +118,6 @@ const AdminDashboardHome = () => {
                     </p>
                 </div>
 
-                {/* 📊 ব্যাকগ্রাউন্ডে ঝাপসা কঙ্কাল (Skeleton Overlay) জাস্ট প্রিমিয়াম ফিল দেওয়ার জন্য */}
                 <div className="absolute inset-x-0 bottom-10 px-8 grid grid-cols-4 gap-6 opacity-5 pointer-events-none blur-sm select-none">
                     {[...Array(4)].map((_, i) => (
                         <div key={i} className="bg-[#111622] h-28 rounded-2xl border border-gray-800"></div>
@@ -143,7 +138,7 @@ const AdminDashboardHome = () => {
                 </div>
             </div>
 
-            {/* 📊 Analytics Overview Cards */}
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                 {[
                     { label: "Total Users", value: analytics?.cards?.totalUsers, color: "from-white to-gray-300" },
@@ -161,10 +156,10 @@ const AdminDashboardHome = () => {
                 ))}
             </div>
 
-            {/* 📈 Charts Section */}
+           
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-                {/* ১. মান্থলি সেলস কম্পোজিশন চার্ট (Bar + Line Overlay) */}
+               
                 <div className="bg-[#111622] p-6 rounded-2xl border border-gray-800/80 shadow-xl h-[420px] flex flex-col justify-between">
                     <div>
                         <h3 className="text-lg font-bold text-gray-100">Monthly Sales Trend</h3>
@@ -191,7 +186,7 @@ const AdminDashboardHome = () => {
                     </div>
                 </div>
 
-                {/* ২. ইন্টারেক্টিভ একটিভ-শেপ পাই চার্ট (Pie Chart with Outer Interaction) */}
+        
                 <div className="bg-[#111622] p-6 rounded-2xl border border-gray-800/80 shadow-xl h-[420px] flex flex-col justify-between">
                     <div>
                         <h3 className="text-lg font-bold text-gray-100">Ebooks Distribution</h3>

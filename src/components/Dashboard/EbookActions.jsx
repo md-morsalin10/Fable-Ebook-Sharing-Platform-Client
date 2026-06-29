@@ -51,7 +51,6 @@ const EbookActions = ({ bookId, currentStatus }) => {
     };
 
     const handleEdit = () => {
-        // 🛡️ শুধুমাত্র Published হলেই এডিট পেজে যাবে, নতুবা ব্লকড
         if (!isPublished) return;
         router.push(`/dashboard/writer/edit-book/${bookId}`);
     };

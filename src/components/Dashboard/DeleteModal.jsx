@@ -1,3 +1,4 @@
+import { getClientToken } from '@/lib/core/tokenClient';
 import { AlertDialog, Button } from '@heroui/react';
 import React from 'react';
 import toast from 'react-hot-toast';
@@ -6,10 +7,16 @@ const DeleteModal = ({ bookId }) => {
     const handleDelete = async () => {
         //    const confirmDelete = window.confirm("Are you sure you want to delete this ebook?");
         //     if (!confirmDelete) return; 
+        
+        const token = await getClientToken();
 
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/books/delete/${bookId}`, {
                 method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "authorization": `Bearer ${token}`
+                },
             });
 
             const data = await res.json();

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Form, TextField, Label, Input, TextArea, Select, ListBox, Button, FieldError } from "@heroui/react";
 import { createBook } from "@/lib/action/books";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 export default function AddEbook() {
   const [loading, setLoading] = useState(false);
@@ -75,16 +76,16 @@ export default function AddEbook() {
         console.log(response, "response");
 
         if (response.insertedId) {
-          alert("Ebook published successfully!");
+          toast.success("Ebook added successfully!");
           form.reset();
           setFileName("");
         } else {
-          alert("Database saving failed.");
+          toast.error("Database saving failed.");
         }
       } 
     } catch (error) {
       console.error(error);
-      alert("Something went wrong.");
+        toast.error("Something went wrong.");
     } finally {
       setLoading(false);
     }

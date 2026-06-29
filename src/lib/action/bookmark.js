@@ -1,5 +1,6 @@
-import { serverMutation } from "../core/server";
+import { clientMutation } from "../core/clientApi";
+
 
 export const createBookmark = async (data) => {
-  return await serverMutation("/api/bookmarks/toggle", data);
+  return await clientMutation("/api/bookmarks/toggle", data);
 }

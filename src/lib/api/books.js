@@ -1,14 +1,12 @@
-import { serverFetch } from "../core/server";
+import { localFetch, serverFetch } from "../core/server";
 
 export const getBooksByWriterId = async ({writerId}) => {
-  // const response = await fetch(`${baseUrl}/api/books?writerId=${writerId}`);
-  // const data = await response.json();
-  // return data;
   return await serverFetch(`/api/books?writerId=${writerId}`);
 };
 
+// not verify token 
 export const getBooks = async () => {
-  return await serverFetch("/api/books");
+  return await localFetch("/api/books");
 };
 
 export const getBookById = async (id, currentUserEmail) => {
@@ -16,6 +14,6 @@ export const getBookById = async (id, currentUserEmail) => {
 }
 
 export const getFeaturedBooks = async () => {
-    return await serverFetch("/api/features/books");
+    return await localFetch("/api/features/books");
 }
 

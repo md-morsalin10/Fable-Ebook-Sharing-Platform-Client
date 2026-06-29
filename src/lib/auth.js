@@ -11,35 +11,39 @@ export const auth = betterAuth({
     // Optional: if you don't provide a client, database transactions won't be enabled.
     client
   }),
-    user:{
-        additionalFields:{
-            role:{
-                default:"reader"
-            },
-            plan:{
-                default:"free"
-            }
-        }
+  user: {
+    additionalFields: {
+      role: {
+        default: "reader"
+      },
+      plan: {
+        default: "free"
+      }
+    }
+  },
+  emailAndPassword: {
+    enabled: true,
+  },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     },
-    emailAndPassword: { 
-    enabled: true, 
-  }, 
-  socialProviders: { 
-    google: { 
-      clientId: process.env.GOOGLE_CLIENT_ID, 
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET, 
-    }, 
   },
   session: {
-    cookieCache:{
+    cookieCache: {
       enabled: true,
       strategy: "jwt",
       maxAge: 60 * 60 * 24 * 7 // 7 days
     }
   },
-  
+
   plugins: [
     jwt()
-  ]
-  
+  ],
+  trustedOrigins: [
+    "http://localhost:3000",        // Local development port
+    "https://fable-ebook-sharing-client.vercel.app",      // Production frontend client
+  ],
+
 });

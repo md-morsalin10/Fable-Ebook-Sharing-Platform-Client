@@ -7,16 +7,16 @@ import { authClient } from '@/lib/auth-client';
 import { createBookmark } from '@/lib/action/bookmark';
 
 export default function EbookDetailsClient({ book: initialBook, isInitiallyBookmarked }) {
-    const [book, setBook] = useState(initialBook); // স্ট্যাটাস লাইভ আপডেট করার জন্য স্টেট
+    const [book, setBook] = useState(initialBook); 
     const [isBookmarked, setIsBookmarked] = useState(isInitiallyBookmarked);
     const [mounted, setMounted] = useState(false);
-    const [isPublishing, setIsPublishing] = useState(false); // পাবলিশ বাটনের লোডিং স্টেট
+    const [isPublishing, setIsPublishing] = useState(false); 
     
     const { data: session } = authClient.useSession();
     const user = session?.user;
     const stripeFormRef = useRef(null);
 
-    // কম্পোনেন্ট ব্রাউজারে মাউন্ট হওয়ার পর স্টেট ট্রু হবে
+    
     useEffect(() => {
         setMounted(true);
     }, []);
@@ -27,7 +27,7 @@ export default function EbookDetailsClient({ book: initialBook, isInitiallyBookm
     const isWriter = user && user.email === book.writerEmail;
     const isBuyer = user && user.email === book.buyerEmail;
 
-    // 🎯 মাউন্ট হওয়ার আগে সার্ভার ও ক্লায়েন্টকে একই স্টেট রাখতে হবে যাতে এরর না আসে
+
     const isContentUnlocked = mounted && (isWriter || isBuyer);
 
     const handleBookmarkToggle = async () => {
@@ -36,11 +36,10 @@ export default function EbookDetailsClient({ book: initialBook, isInitiallyBookm
             return;
         }
 
-        // 🔄 UI-তে সাথে সাথে স্টার বাটন টগল করে দেওয়া (Instant Feedback)
         setIsBookmarked(!isBookmarked);
 
         try {
-            // 🚀 আপনার তৈরি করা সার্ভার অ্যাকশন কল
+            
             await createBookmark({
                 userId: user.id,
                 bookId: currentBookId,

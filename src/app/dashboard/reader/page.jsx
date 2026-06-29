@@ -23,7 +23,6 @@ const ReaderDashboardPage = async () => {
   
     const recentPurchases = paymentData.slice(0, 2);
 
-    // আজকের ডেট ফরম্যাট করার জন্য
     const formattedDate = new Date().toLocaleDateString('en-US', {
         weekday: 'long',
         month: 'long',

@@ -3,10 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const BooksCard = ({ book }) => {
-    // MongoDB Object ID অথবা নরমাল ID হ্যান্ডেল করার জন্য
     const bookId = book._id;
     
-    // ডাটাবেজের স্ট্যাটাস চেক
     const isSold = book.status?.toLowerCase() === 'sold';
 
     return (

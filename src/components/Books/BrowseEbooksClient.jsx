@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import BooksCard from './BooksCard';
+import FadeIn from '../MotionWrapper/FadeIn';
 
 export default function BrowseEbooksClient({ initialBooks }) {
     // Search, Filter, Sort States
@@ -13,12 +14,10 @@ export default function BrowseEbooksClient({ initialBooks }) {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
 
-    // কোনো ফিল্টার পরিবর্তন হলে পেজিনেশন রিসেট হবে
     useEffect(() => {
         setCurrentPage(1);
     }, [searchTerm, selectedGenre, sortBy]);
 
-    // 🎯 ফিল্টারিং লজিক
     const filteredBooks = initialBooks
         .filter((book) => {
             const matchesSearch = 
@@ -36,13 +35,13 @@ export default function BrowseEbooksClient({ initialBooks }) {
             return 0;
         });
 
-    // 📄 পেজিনেশন হিসাব-নিকাশ
+
     const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredBooks.slice(indexOfFirstItem, indexOfLastItem);
 
-    // ফিল্টার পুরোপুরি পরিষ্কার করার ফাংশন
+
     const handleClearFilters = () => {
         setSearchTerm('');
         setSelectedGenre('all');
@@ -114,7 +113,7 @@ export default function BrowseEbooksClient({ initialBooks }) {
                     </div>
                     <h3 className="text-lg font-bold text-white tracking-wide">No Ebooks Found</h3>
                     <p className="text-gray-400 text-sm mt-2 max-w-sm mx-auto leading-relaxed">
-                        We couldn't find any books matching your specific filters or search keywords. Try adjusting them or reset to see all books!
+                        We couldn't find any books matching your specific filters or search keywords. Try adjusting them or reset to see all books! 😢
                     </p>
                     <button
                         onClick={handleClearFilters}
@@ -127,8 +126,10 @@ export default function BrowseEbooksClient({ initialBooks }) {
                 <>
                     {/* Responsive Grid View */}
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {currentItems.map((book) => (
-                            <BooksCard key={book._id?.$oid || book._id} book={book} />
+                        {currentItems.map((book, index) => (
+                            <FadeIn key={book._id?.$oid || book._id} delay={index * 0.1}>
+                                <BooksCard book={book} />
+                            </FadeIn>
                         ))}
                     </div>
 

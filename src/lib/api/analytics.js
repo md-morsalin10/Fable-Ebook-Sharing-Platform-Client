@@ -1,5 +1,5 @@
-import { serverFetch } from "../core/server";
+import { clientFetch } from "../core/clientApi";
 
 export const getAnalytics = async () => {
-    return await serverFetch("/api/admin/analytics");
+    return await clientFetch("/api/admin/analytics");
 }

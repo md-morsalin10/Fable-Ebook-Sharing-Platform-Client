@@ -6,14 +6,13 @@ import { getUserSeason } from '@/lib/core/Session';
 
 const BookmarkPage = async () => {
     const user = await getUserSeason();
-    // বুকমার্ক ডাটা ফেচ করা
     const booksBookmarksData = (await getBookmarksByUserId(user?.id)) || [];
 
     return (
         <div className="min-h-screen bg-[#060913] text-gray-100 py-10 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 
-                {/* 🏷️ পেজ হেডার */}
+  
                 <div className="mb-10 pb-5 border-b border-gray-800/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
                         <h1 className="text-2xl md:text-3xl font-extrabold tracking-wide text-white flex items-center gap-2">
@@ -44,10 +43,10 @@ const BookmarkPage = async () => {
                     </div>
                 ) : (
                     
-                    /* 📚 বুকমার্কড বুকস গ্যালারি গ্রিড */
+                  
                     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
                         {booksBookmarksData.map((bookmark) => {
-                            // আইডি অবজেক্ট বা নরমাল স্ট্রিং সেফলি হ্যান্ডেল করা
+                        
                             const currentBookId = bookmark.bookId?.$oid || bookmark.bookId || '';
                             const uniqueKey = bookmark._id?.$oid || bookmark._id
                             
@@ -56,7 +55,7 @@ const BookmarkPage = async () => {
                                     key={uniqueKey}
                                     className="group relative bg-[#0B0F17] border border-gray-800/70 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl hover:border-purple-500/30 transition-all duration-300 flex flex-col h-full"
                                 >
-                                    {/* কভার ইমেজ সেকশন (হোভার স্কেলিং ইফেক্ট) */}
+                            
                                     <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-950">
                                         {bookmark.coverImage ? (
                                             <Image 
@@ -70,7 +69,7 @@ const BookmarkPage = async () => {
                                             <div className="w-full h-full bg-gray-900 flex items-center justify-center text-gray-600">No Cover</div>
                                         )}
                                         
-                                        {/* জেনার ব্যাজ */}
+                                   
                                         {bookmark.genre && (
                                             <span className="absolute top-3 left-3 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 bg-purple-500/20 text-purple-300 backdrop-blur-md rounded border border-purple-500/30">
                                                 {bookmark.genre}
@@ -78,7 +77,7 @@ const BookmarkPage = async () => {
                                         )}
                                     </div>
 
-                                    {/* কন্টেন্ট/ডিটেইলস সেকশন */}
+                            
                                     <div className="p-4 flex flex-col flex-grow">
                                         <h3 className="text-sm md:text-base font-bold text-white line-clamp-1 group-hover:text-[#E5BA73] transition-colors">
                                             {bookmark.title}
@@ -87,7 +86,7 @@ const BookmarkPage = async () => {
                                             by <span className="text-gray-300 font-medium">{bookmark.writerName || "Unknown"}</span>
                                         </p>
 
-                                        {/* দাম এবং অ্যাকশন বাটন */}
+                                
                                         <div className="mt-4 pt-3 border-t border-gray-800/60 flex items-center justify-between gap-2">
                                             <div>
                                                 <span className="block text-[9px] uppercase text-gray-500 font-semibold tracking-wider">Price</span>
