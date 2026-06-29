@@ -76,7 +76,7 @@ The platform features **three distinct user roles**, a **Stripe payment integrat
 ### 👥 Three-Role System
 | Role | Dashboard Route |
 |------|----------------|
-| Reader (User) | `/dashboard/user` |
+| Reader (User) | `/dashboard/reader` |
 | Writer | `/dashboard/writer` |
 | Admin | `/dashboard/admin` |
 
@@ -99,7 +99,7 @@ The platform features **three distinct user roles**, a **Stripe payment integrat
 - Analytics overview cards — total users, writers, ebooks sold, revenue
 - Monthly sales **bar chart**
 - Ebooks by genre **pie chart**
-- Manage all users — **role change dropdown** (user/writer/admin), delete
+- Manage all users — **role change dropdown** (reader/writer/admin), delete
 - Manage all ebooks — publish/unpublish, delete
 - View all transactions — purchase fees + publishing fees
 
