@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 📚 Fable – Premium Ebook Sharing Platform
 
-## Getting Started
+Fable is a premium digital literature ecosystem built on the MERN stack using **Next.js 14+ (App Router)** and **Express.js**. The platform seamlessly bridges the gap between avid readers, literary collectors, and independent authors. It offers immersive book browsing, interactive role-based dashboards, instant stripe payment verification, and real-time analytical insights.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Live Links & Credentials
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+* **Live Deployment:** [👉 Click Here to Visit Fable](https://your-vercel-live-link.vercel.app)
+* **Client Repository:** [GitHub Frontend Link](https://github.com/your-username/fable-client)
+* **Server Repository:** [GitHub Backend Link](https://github.com/your-username/fable-server)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### 🔑 Demo Admin Credentials:
+* **Email:** `admin@gamil.com`
+* **Password:** `Admin@123`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## ✨ Key Features
 
-To learn more about Next.js, take a look at the following resources:
+### 🔐 1. Next-Gen Authentication & Hybrid RBAC
+* **Secure Auth:** Integrated modern credential and Google OAuth flow utilizing **BetterAuth** and JWT architecture with 7-day token persistence.
+* **Role Selection:** Dynamic post-registration onboarding where users can switch between **Reader (User)** and **Writer** roles.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🎨 2. Premium Cinematic UI/UX (No Gobindo Design)
+* **Dynamic Hero Carousel:** Seamless slider using pure **Framer Motion (`AnimatePresence`)** for elegant context-aware accent highlights.
+* **Scroll & Hover Physics:** Fluid staggered animations, image scaling tricks, and glassmorphic micro-interactions to please modern tech recruiters.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 💳 3. Multi-Tier Stripe Monitization Flow
+* **Writers Pro Subscriptions:** Automated publishing monetization module. Upgrades writers from `free` to `pro` instantly inside MongoDB.
+* **Ebook Purchase Architecture:** Secure checkout sessions via Stripe. Converts items to 'Sold' seamlessly with access locks dynamically detached for specific buyers.
 
-## Deploy on Vercel
+### 🔍 4. Advance Exploration Engine
+* **Multifaceted Search:** Deep real-time text matching by *Book Title* or *Writer Name*.
+* **Granular Filtering:** Instant categorization by genre grid, structured price boundaries, and stock availability statuses.
+* **Smart Sorting & Pagination:** Configured layout sorting rules (Price Low-to-High, High-to-Low, Newest Release) accompanied by clean navigation breaks.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 📊 5. Specialized Multi-Role Dashboards
+* **Admin Desk:** Complete analytical reporting charts (Ebooks by Genre, Monthly Revenues), structural user management panels, and uniform transaction ledger lookups.
+* **Writer Suite:** Full CRUD functionalities on personal listings (Create with **imgBB** API, Edit, Delete, Toggle Publish/Unpublish status), plus detailed customer payout lines.
+* **Reader Hub:** Custom transaction tabular records, immediate entry points into digital purchases, and dedicated bookmark shelves.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🛠️ Tech Stack & Packages Used
+
+### Frontend (Client-Side)
+* **Framework:** Next.js (App Router)
+* **Styling:** Tailwind CSS
+* **Animations:** Framer Motion
+* **State & Core Utilities:** BetterAuth, `jose-cjs` (JWT handling), `next-themes` (Dark Mode Persist), `lucide-react` (Premium Icons)
+
+### Backend (Server-Side)
+* **Runtime:** Node.js with Express.js
+* **Database:** MongoDB Atlas (Native Driver Architecture)
+* **Payments:** Stripe Node API
+* **Security & Utility:** `cors`, `dotenv`, `jose-cjs` (Remote JWKS Verification Middleware)
+
+---
