@@ -28,7 +28,6 @@ const topWriters = [
   },
 ];
 
-
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -38,7 +37,6 @@ const containerVariants = {
     },
   },
 };
-
 
 const cardVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -51,8 +49,13 @@ const cardVariants = {
 
 const TopWriters = () => {
   return (
-    <section className="bg-[#0B0F17] py-24 px-4 sm:px-6 lg:px-8 select-none overflow-hidden">
-      <div className="max-w-7xl mx-auto">
+    /* 🛠️ এখানে ব্যাকগ্রাউন্ড bg-transparent করে দেওয়া হয়েছে যেন মেইন ডার্ক থিমের সাথে মিশে যায় */
+    <section className="bg-transparent py-24 px-4 sm:px-6 lg:px-8 select-none overflow-hidden relative">
+      
+      {/* ব্যাকগ্রাউন্ডে একটি হালকা গ্লো ইফেক্ট (ঐচ্ছিক, প্রিমিয়াম লুকের জন্য) */}
+      <div className="absolute top-1/4 right-10 w-[300px] h-[300px] bg-purple-950/5 blur-[120px] rounded-full pointer-events-none"></div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
         
         {/* 🎬 Section Title with Motion */}
         <motion.div 
@@ -84,10 +87,11 @@ const TopWriters = () => {
               variants={cardVariants}
               whileHover={{ 
                 y: -10, 
-                borderColor: "rgba(229, 186, 115, 0.4)",
-                boxShadow: "0px 20px 40px rgba(0, 0, 0, 0.5)" 
+                borderColor: "rgba(229, 186, 115, 0.3)",
+                boxShadow: "0px 20px 40px rgba(0, 0, 0, 0.6)" 
               }}
-              className="bg-[#161B26] rounded-2xl border border-gray-800/40 p-8 flex flex-col items-center justify-center text-center shadow-2xl transition-all duration-300 group"
+              /* 💡 কার্ডের ভেতরের ব্যাকগ্রাউন্ডকে ডার্ক থিমের সাথে ম্যাচ করে গ্লাস-মরফিক টাইপ (bg-[#0B0F17]/30) করা হয়েছে */
+              className="bg-[#0B0F17]/30 backdrop-blur-md rounded-2xl border border-gray-800/40 p-8 flex flex-col items-center justify-center text-center transition-all duration-300 group cursor-pointer"
             >
               
               {/* Writer Avatar Container */}
@@ -95,7 +99,6 @@ const TopWriters = () => {
                 {/* বাইরের গ্লোয়িং রিং */}
                 <div className={`absolute inset-0 rounded-full border-4 ${writer.borderColor} transition-transform duration-500 group-hover:scale-105`} />
                 
-              
                 <div className="relative w-[112px] h-[112px] rounded-full overflow-hidden bg-gray-950">
                   <Image
                     src={writer.avatar}

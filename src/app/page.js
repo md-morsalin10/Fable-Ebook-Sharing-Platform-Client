@@ -2,8 +2,9 @@ import Banner from "@/components/Banner";
 import BookMarquee from "@/components/BookMarquee";
 import BrowseByGenre from "@/components/BrowseByGenre";
 import FeaturedBooks from "@/components/FeaturedBooks";
+import PlatformStats from "@/components/PlatformStats";
 import TopWriters from "@/components/TopWriters";
-import { Book } from "lucide";
+
 
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
      <BookMarquee/>
      <FeaturedBooks/>
      <TopWriters/>
+     <PlatformStats/>
      <BrowseByGenre/>
    </div>
   );
