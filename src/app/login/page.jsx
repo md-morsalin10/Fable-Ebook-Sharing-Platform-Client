@@ -11,7 +11,6 @@ const LoginPage = () => {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirect') || '/';
 
-  // 📩 স্টেট ছাড়া ডিরেক্ট ফর্ম ডেটা হ্যান্ডলার
   const handleSubmit = async (e) => {
     e.preventDefault();
     

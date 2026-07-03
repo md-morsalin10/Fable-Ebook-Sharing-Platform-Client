@@ -22,6 +22,7 @@ const Navbar = () => {
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "Browse Ebooks", href: "/browse-ebooks" },
+    { label: "About Us", href: "/about-page" },
 
   ];
 

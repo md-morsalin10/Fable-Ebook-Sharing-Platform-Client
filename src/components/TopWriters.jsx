@@ -49,7 +49,7 @@ const cardVariants = {
 
 const TopWriters = () => {
   return (
-    /* 🛠️ এখানে ব্যাকগ্রাউন্ড bg-transparent করে দেওয়া হয়েছে যেন মেইন ডার্ক থিমের সাথে মিশে যায় */
+  
     <section className="bg-transparent py-24 px-4 sm:px-6 lg:px-8 select-none overflow-hidden relative">
       
       {/* ব্যাকগ্রাউন্ডে একটি হালকা গ্লো ইফেক্ট (ঐচ্ছিক, প্রিমিয়াম লুকের জন্য) */}
