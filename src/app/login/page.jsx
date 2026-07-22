@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link"; 
-import { Envelope, Key, ArrowRight } from "@gravity-ui/icons";
+import { Envelope, Key, ArrowRight, User } from "@gravity-ui/icons";
 import { authClient } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -11,38 +11,56 @@ const LoginPage = () => {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirect') || '/';
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(e.currentTarget);
-    const credentials = Object.fromEntries(formData.entries());
+  // Form input states
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    console.log("Submitting Login Credentials:", credentials);
+  // Helper Function for Login Logic
+  const performLogin = async (loginEmail, loginPassword) => {
+    setLoading(true);
+    try {
+      const { data, error } = await authClient.signIn.email({
+        email: loginEmail,
+        password: loginPassword,
+      });
 
-    // Better-Auth বা আপনার কাস্টম authClient দিয়ে সাইন-ইন করা
-    const { data, error } = await authClient.signIn.email({
-        email: credentials.email,
-        password: credentials.password,
-    });
-
-    if (data) {
+      if (data) {
         toast.success('Welcome Back!');
         router.push(redirectTo); 
-    }
-    if (error) {
+      }
+      if (error) {
         toast.error(error.message || "Invalid credentials");
+      }
+    } catch (err) {
+      toast.error("Something went wrong during login.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await performLogin(email, password);
+  };
+
+  // Quick Login Credential Buttons Handler
+  const handleQuickLogin = async (roleEmail, rolePassword) => {
+    setEmail(roleEmail);
+    setPassword(rolePassword);
+    await performLogin(roleEmail, rolePassword);
   };
 
   const handleGoogleAuth = async () => {
     try {
-        await authClient.signIn.social({
-            provider: "google",
-            callbackURL: "/",
-        });
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
     } catch (err) {
-        toast.error("Google Sign-In failed. Please try again.");
-        console.error(err);
+      toast.error("Google Sign-In failed. Please try again.");
+      console.error(err);
     }
   };
 
@@ -77,6 +95,39 @@ const LoginPage = () => {
           <p className="text-xs text-gray-400 font-light">Please enter your credentials to access your library.</p>
         </div>
 
+        {/* --- Quick Demo Credentials Buttons --- */}
+        <div className="mb-6 bg-[#0B0F17]/80 p-3 rounded-xl border border-gray-800/80">
+          <p className="text-[11px] text-gray-400 text-center mb-2 font-medium tracking-wide">
+            ⚡ Quick Demo Login:
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => handleQuickLogin('admin@gmail.com', 'Admin@123')}
+              className="bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 text-amber-400 py-1.5 px-2 rounded-lg text-xs font-medium transition-all text-center flex flex-col items-center justify-center disabled:opacity-50"
+            >
+              <span>Admin</span>
+            </button>
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => handleQuickLogin('writers@gmail.com', 'Morsalin501921')}
+              className="bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 text-purple-400 py-1.5 px-2 rounded-lg text-xs font-medium transition-all text-center flex flex-col items-center justify-center disabled:opacity-50"
+            >
+              <span>Writer</span>
+            </button>
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => handleQuickLogin('shakib@gmail.com', 'Morsalin501921')}
+              className="bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 text-blue-400 py-1.5 px-2 rounded-lg text-xs font-medium transition-all text-center flex flex-col items-center justify-center disabled:opacity-50"
+            >
+              <span>Reader</span>
+            </button>
+          </div>
+        </div>
+
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           
@@ -90,6 +141,8 @@ const LoginPage = () => {
               <input
                 type="email"
                 name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="author@fable.com"
                 className="w-full bg-[#0B0F17] border border-gray-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#E5BA73]/50 transition-colors"
@@ -112,6 +165,8 @@ const LoginPage = () => {
               <input
                 type="password"
                 name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="••••••••"
                 className="w-full bg-[#0B0F17] border border-gray-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#E5BA73]/50 transition-colors"
@@ -122,9 +177,10 @@ const LoginPage = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-[#E5BA73] text-[#0B0F17] py-3 rounded-xl text-sm font-bold shadow-lg shadow-amber-950/20 hover:bg-[#d4a75e] transition-all duration-200 flex items-center justify-center space-x-2 mt-6"
+            disabled={loading}
+            className="w-full bg-[#E5BA73] text-[#0B0F17] py-3 rounded-xl text-sm font-bold shadow-lg shadow-amber-950/20 hover:bg-[#d4a75e] transition-all duration-200 flex items-center justify-center space-x-2 mt-6 disabled:opacity-50"
           >
-            <span>Login to Fable</span>
+            <span>{loading ? "Logging in..." : "Login to Fable"}</span>
             <ArrowRight style={{ width: "16px", height: "16px" }} />
           </button>
         </form>
