@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TrashBin, Magnifier, CloudArrowUpIn, EyesLookLeft } from "@gravity-ui/icons";
+import { TrashBin, Magnifier, CloudArrowUpIn, EyesLookLeft, ChevronLeft, ChevronRight } from "@gravity-ui/icons";
 import { BsCloudArrowDown } from "react-icons/bs";
 import Image from "next/image";
 import toast from "react-hot-toast";
@@ -9,11 +9,23 @@ import { getClientToken } from "@/lib/core/tokenClient";
 
 const TABLE_COLS = ["Book Info", "Writer", "Price", "Status", "Actions"];
 const API = process.env.NEXT_PUBLIC_URL;
+const ITEMS_PER_PAGE = 6; // প্রতি পেজে যতগুলো বই দেখাতে চান
 
 export default function EbooksTableClient({ initialBooks = [] }) {
   const [books, setBooks] = useState(initialBooks);
   const [loadingId, setLoadingId] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
+  // Pagination Calculation
+  const totalPages = Math.ceil(books.length / ITEMS_PER_PAGE) || 1;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentBooks = books.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
 
   const handleToggleStatus = async (bookId, currentStatus) => {
     const token = await getClientToken();
@@ -26,9 +38,10 @@ export default function EbooksTableClient({ initialBooks = [] }) {
     try {
       const res = await fetch(`${API}/api/admin/books/status/${bookId}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json",
+        headers: { 
+          "Content-Type": "application/json",
           "authorization": `Bearer ${token}`
-         },
+        },
         body: JSON.stringify({ status: newStatus }),
       });
 
@@ -49,9 +62,7 @@ export default function EbooksTableClient({ initialBooks = [] }) {
     }
   };
 
- 
   const handleDelete = async (bookId, currentStatus) => {
-  
     if (currentStatus?.toLowerCase() === "sold") {
       toast.error("Sold out books cannot be deleted for record safety.");
       return;
@@ -60,13 +71,13 @@ export default function EbooksTableClient({ initialBooks = [] }) {
     const token = await getClientToken();
 
     try {
-      const res = await fetch(`${API}/api/admin/books/${bookId}`,
-         { method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "authorization": `Bearer ${token}`
-          }
-          });
+      const res = await fetch(`${API}/api/admin/books/${bookId}`, { 
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "authorization": `Bearer ${token}`
+        }
+      });
 
       if (res.ok) {
         const remainingBooks = books.filter((book) => {
@@ -74,6 +85,12 @@ export default function EbooksTableClient({ initialBooks = [] }) {
           return id !== bookId;
         });
         setBooks(remainingBooks);
+        
+        // Delete করার পর যদি এই পেজে আর কোনো আইটেম না থাকে তবে আগের পেজে রিডাইরেক্ট হবে
+        if (remainingBooks.slice(startIndex, startIndex + ITEMS_PER_PAGE).length === 0 && currentPage > 1) {
+          setCurrentPage(currentPage - 1);
+        }
+
         toast.success("Book deleted successfully");
       } else {
         toast.error("Failed to delete book");
@@ -101,10 +118,10 @@ export default function EbooksTableClient({ initialBooks = [] }) {
 
       {/* ── মোবাইল ভিউ ── */}
       <div className="block md:hidden divide-y divide-white/[0.04]">
-        {books.length === 0 ? (
+        {currentBooks.length === 0 ? (
           <div className="py-12 text-center text-sm text-[#8892A4]">No books found.</div>
         ) : (
-          books.map((book, idx) => {
+          currentBooks.map((book, idx) => {
             const id = book._id?.$oid || book._id;
             const isSold = book.status?.toLowerCase() === "sold";
             const isPublished = book.status === "published";
@@ -193,12 +210,12 @@ export default function EbooksTableClient({ initialBooks = [] }) {
           </thead>
 
           <tbody>
-            {books.length === 0 ? (
+            {currentBooks.length === 0 ? (
               <tr>
                 <td colSpan={5} className="py-16 text-center text-sm text-[#8892A4]">No books found.</td>
               </tr>
             ) : (
-              books.map((book, idx) => {
+              currentBooks.map((book, idx) => {
                 const id = book._id?.$oid || book._id;
                 const isSold = book.status?.toLowerCase() === "sold";
                 const isPublished = book.status === "published";
@@ -287,10 +304,48 @@ export default function EbooksTableClient({ initialBooks = [] }) {
         </table>
       </div>
 
-      {/* Footer */}
-      <div className="px-4 sm:px-6 py-4 flex items-center justify-between text-[11px] text-[#8892A4] border-t border-white/[0.05]">
-        <span>Showing <span className="text-[#D4C5B0]">{books.length}</span> books</span>
-        <span className="text-[#524534] hidden xs:inline">Fable Admin Panel</span>
+      {/* ── Footer & Pagination Controls ── */}
+      <div className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-[#8892A4] border-t border-white/[0.05]">
+        <div>
+          Showing <span className="text-[#D4C5B0]">{books.length > 0 ? startIndex + 1 : 0}</span> to{" "}
+          <span className="text-[#D4C5B0]">{Math.min(startIndex + ITEMS_PER_PAGE, books.length)}</span> of{" "}
+          <span className="text-[#D4C5B0]">{books.length}</span> books
+        </div>
+
+        {/* Pagination Buttons */}
+        {totalPages > 1 && (
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="p-1.5 rounded-lg border border-white/[0.08] bg-white/[0.02] text-[#8892A4] hover:bg-white/[0.08] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold border transition-all ${
+                  currentPage === page
+                    ? "bg-[#E5BA73] text-[#0B0F17] border-[#E5BA73] font-bold"
+                    : "border-white/[0.08] bg-white/[0.02] text-[#8892A4] hover:bg-white/[0.06] hover:text-white"
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="p-1.5 rounded-lg border border-white/[0.08] bg-white/[0.02] text-[#8892A4] hover:bg-white/[0.08] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
 
     </div>
