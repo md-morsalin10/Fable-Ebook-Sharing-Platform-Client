@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { motion } from "framer-motion";
 // Icons
 import {
   Book,
@@ -65,53 +66,82 @@ export function DashboardSideBar() {
   // 🛡️ যদি সেশন এখনো লোড হতে থাকে, তবে একটি খালি অ্যারে বা লোডিং স্টেট দিবে যেন .map এরর না মারে
   const navItems = navLinksMap[currentRole] || [];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 100 } },
+  };
+
   const navContent = (
     <div className="flex flex-col h-full bg-[#0B0F17] text-white py-6 px-4">
       {/* 👑 Brand Identity */}
-      <div className="px-3 mb-9">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="px-3 mb-9"
+      >
         <Link href="/" className="text-2xl font-serif font-bold text-[#E5BA73] tracking-wider block">
           Fable
           <span className="text-[10px] font-sans uppercase tracking-widest text-[#E5BA73]/60 font-bold ml-1.5">
             {currentRole === "writer" ? "Writer Panel" : currentRole === "reader" ? "Reader Panel" : "Admin Panel"}
           </span>
         </Link>
-      </div>
+      </motion.div>
 
       {/* 🔗 Navigation Links */}
-      <nav className="flex-1 flex flex-col gap-1.5">
+      <motion.nav 
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="flex-1 flex flex-col gap-1.5"
+      >
         {isPending ? (
           <div className="text-gray-500 text-xs px-4 py-2 animate-pulse">Loading Menu...</div>
         ) : (
           navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-xs uppercase tracking-wider font-semibold transition-all duration-200 group ${isActive
-                  ? "bg-[#E5BA73]/10 text-[#E5BA73] border border-[#E5BA73]/20"
-                  : "text-gray-400 hover:text-white hover:bg-gray-900/40"
-                  }`}
-              >
-                <item.icon
-                  className={`w-4 h-4 transition-colors ${isActive ? "text-[#E5BA73]" : "text-gray-500 group-hover:text-gray-300"
+              <motion.div key={item.label} variants={itemVariants} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Link
+                  href={item.href}
+                  className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-xs uppercase tracking-wider font-semibold transition-all duration-200 group ${isActive
+                    ? "bg-[#E5BA73]/10 text-[#E5BA73] border border-[#E5BA73]/20"
+                    : "text-gray-400 hover:text-white hover:bg-gray-900/40"
                     }`}
-                />
-                <span>{item.label}</span>
-              </Link>
+                >
+                  <item.icon
+                    className={`w-4 h-4 transition-colors ${isActive ? "text-[#E5BA73]" : "text-gray-500 group-hover:text-gray-300"
+                      }`}
+                  />
+                  <span>{item.label}</span>
+                </Link>
+              </motion.div>
             );
           })
         )}
-      </nav>
+      </motion.nav>
     </div>
   );
 
   return (
     <>
       {/* 🖥️ Desktop Fixed Sidebar */}
-      <aside className="hidden lg:block w-64 h-full flex-shrink-0 bg-[#0B0F17]">
+      <motion.aside 
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="hidden lg:block w-64 h-full flex-shrink-0 bg-[#0B0F17]"
+      >
         {navContent}
-      </aside>
+      </motion.aside>
 
       {/* 📱 Mobile Responsive Trigger Button & Drawer */}
       <div className="lg:hidden fixed bottom-6 right-6 z-50">

@@ -4,6 +4,7 @@ import { authClient } from '@/lib/auth-client';
 import React from 'react';
 import { BsSearch, BsBell, BsQuestionCircle } from 'react-icons/bs';
 import NavbarProfileDropdown from '../NavbarProfileDropdown';
+import { motion } from 'framer-motion';
 
 export default function DashboardNavbar() {
   // ডামি ডাটা (আপনি পরবর্তীতে আপনার Auth Context থেকে রিয়েল ডাটা বসিয়ে নেবেন)
@@ -16,7 +17,12 @@ export default function DashboardNavbar() {
 //   };
 
   return (
-    <header className="w-full flex items-center justify-between border-b border-gray-900/40 bg-[#0B0F17] px-6 py-4 lg:px-10">
+    <motion.header 
+      initial={{ y: -50, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="w-full flex items-center justify-between border-b border-gray-900/40 bg-[#0B0F17] px-6 py-4 lg:px-10"
+    >
       
       {/* 🔍 বাম দিক: সার্চ বার */}
       <div className="relative w-full max-w-[400px]">
@@ -63,6 +69,6 @@ export default function DashboardNavbar() {
         </div>
 
       </div>
-    </header>
+    </motion.header>
   );
 }
