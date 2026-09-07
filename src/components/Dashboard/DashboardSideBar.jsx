@@ -25,23 +25,21 @@ import { BsArrowLeftRight } from "react-icons/bs";
 export function DashboardSideBar() {
   const pathname = usePathname();
 
-  // 👥 Better-Auth সেশন রিড করা
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
 
-  // 🎯 সেফটি ফলব্যাক: ইউজার রোল না পাওয়া গেলে ডিফল্ট 'reader' সেট হবে
   const currentRole = user?.role || "reader";
 
-  // ✍️ রাইটার (Writer) প্যানেল মেনু
+ 
   const writerNavItems = [
     { icon: LayoutSideContent, href: "/dashboard/writer", label: "Dashboard Home" },
     { icon: Book, href: "/dashboard/writer/my-book", label: "Manage Ebooks" },
     { icon: Plus, href: "/dashboard/writer/add-ebook", label: "Add Ebook" },
     { icon: Bookmark, href: "/dashboard/writer/bookmarks", label: "Bookmark Page" },
     { icon: ArrowRightArrowLeft, href: "/dashboard/writer/sales-history", label: "Sales History" },
+    { icon: Gear, href: "/dashboard/writer/profile", label: "Profile Management" },
   ];
 
-  // 📖 রিডার (Reader/User) প্যানেল মেনু
   const readerNavItems = [
     { icon: LayoutSideContent, href: "/dashboard/reader", label: "Dashboard Home" },
     { icon: Book, href: "/dashboard/reader/purchased-ebook", label: "Purchased Ebooks" },
@@ -63,7 +61,6 @@ export function DashboardSideBar() {
     admin: adminNavItems,
   };
 
-  // 🛡️ যদি সেশন এখনো লোড হতে থাকে, তবে একটি খালি অ্যারে বা লোডিং স্টেট দিবে যেন .map এরর না মারে
   const navItems = navLinksMap[currentRole] || [];
 
   const containerVariants = {
